@@ -40,7 +40,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _uiSetup() {
     return Scaffold(
-      backgroundColor: Colors.amberAccent,
+      backgroundColor: Colors.amber,
       body: SingleChildScrollView(
         child: Column(
           children: [

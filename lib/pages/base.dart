@@ -17,10 +17,13 @@ class BasePageState<T extends BasePage> extends State<T> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBarBuilder(),
-      body: ProgressHUD(
-        inAsyncCall: isApiCallProcess,
-        opacity: 0.3,
-        child: pageUI(),
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: ProgressHUD(
+          inAsyncCall: isApiCallProcess,
+          opacity: 0.3,
+          child: pageUI(),
+        ),
       ),
     );
   }
@@ -32,15 +35,16 @@ class BasePageState<T extends BasePage> extends State<T> {
   _appBarBuilder() {
     return AppBar(
       centerTitle: true,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-      backgroundColor: AppColors.accentColor,
       elevation: 0,
+      foregroundColor: Colors.white,
+      backgroundColor: AppColors.accentColor,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
       automaticallyImplyLeading: true,
       title: const Text("Al Aseel", style: TextStyle(color: Colors.white)),
       actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none, color: Colors.white)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none)),
         const SizedBox(width: 10),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart, color: Colors.white)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart)),
       ],
     );
   }

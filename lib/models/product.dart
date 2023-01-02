@@ -57,7 +57,7 @@ class Product {
         sku: map['sku'] != null ? map['sku'] as String : null,
         price: map['price'] != null ? map['price'] as String : null,
         regularPrice: map['regular_price'] != null ? map['regular_price'] as String : null,
-        salePrice: map['sale_price'] != null ? map['sale_price'] as String : null,
+        salePrice: map['sale_price'] != null ? map['sale_price'] as String : map['regular_price'] ?? "",
         stockStatus: map['stock_status'] != null ? map['stock_status'] as String : null,
         images: map['images'] != null ? List<Image>.from((map['images']).map<Image?>((x) => Image.fromMap(x as Map<String, dynamic>))) : null,
         categories:
@@ -71,5 +71,15 @@ class Product {
   @override
   String toString() {
     return 'Product(id: $id, name: $name, description: $description, shortDescription: $shortDescription, sku: $sku, price: $price, regularPrice: $regularPrice, salePrice: $salePrice, stockStatus: $stockStatus, images: $images, categories: $categories)';
+  }
+
+  int calculateDiscount() {
+    double regularPrice = double.tryParse(this.regularPrice.toString()) ?? 0;
+    double salePrice = double.tryParse(this.salePrice.toString()) ?? regularPrice;
+    double discount = regularPrice - salePrice;
+    if (discount <= 0.0) return 0;
+
+    double discountPercent = (discount / regularPrice) * 100;
+    return discountPercent.round();
   }
 }

@@ -18,7 +18,7 @@ class ProductImage extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder: const AssetImage('assets/images/image_placeholder.png'),
         image: NetworkImage(imageURL ?? ""),
-        imageErrorBuilder: (_, __, ___) => SizedBox(height: height, child: Image.asset('assets/images/image_placeholder.png', width: width, height: height)),
+        imageErrorBuilder: (_, __, ___) => Image.asset('assets/images/image_placeholder.png', width: width, height: height),
         placeholderErrorBuilder: (_, __, ___) => const Center(child: CircularProgressIndicator()),
         placeholderFit: BoxFit.cover,
       ),

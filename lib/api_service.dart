@@ -82,10 +82,26 @@ class APIService {
     return categories;
   }
 
-  Future<List<Product>> getProducts(String tagId) async {
+  Future<List<Product>> getProducts({
+    int? pageNumber,
+    int? pageSize,
+    String? strSearch,
+    String? tagName,
+    String? categoryId,
+    String? sortBy,
+    String? sortOrder = "asc",
+  }) async {
     var products = <Product>[];
     try {
-      var url = "${Config.storeApiUrl}${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}&tag=$tagId";
+      String parameter = "";
+      if (strSearch != null) parameter += '&search=$strSearch';
+      if (pageSize != null) parameter += '&per_page=$pageSize';
+      if (pageNumber != null) parameter += '&page=$pageNumber';
+      if (tagName != null) parameter += '&tag=$tagName';
+      if (categoryId != null) parameter += '&category=$categoryId';
+      if (sortBy != null) parameter += '&orderby=$sortBy';
+      if (sortOrder != null) parameter += '&order=$sortOrder';
+      var url = "${Config.storeApiUrl}${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}$parameter";
 
       var response = await Dio().get(
         url.toString(),

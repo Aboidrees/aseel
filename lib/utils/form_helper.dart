@@ -56,8 +56,8 @@ class FormHelper {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.amberAccent, style: BorderStyle.solid, width: 1.0),
-            color: Colors.amberAccent,
+            border: Border.all(color: Colors.amber, style: BorderStyle.solid, width: 1.0),
+            color: Colors.amber,
             borderRadius: BorderRadius.circular(30.0),
           ),
           child: Row(

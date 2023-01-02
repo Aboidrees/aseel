@@ -44,7 +44,7 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget _uiSetup() {
     return Scaffold(
-      backgroundColor: Colors.amberAccent,
+      backgroundColor: Colors.amber,
       body: SingleChildScrollView(
         child: Column(
           children: [

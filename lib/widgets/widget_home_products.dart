@@ -53,10 +53,14 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
 
   Widget _buildProductsNavigation() {
     return FutureBuilder(
-      future: apiService.getProducts(widget.tagId),
+      future: apiService.getProducts(tagName: widget.tagId),
       builder: (context, AsyncSnapshot<List<Product>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        if (snapshot.hasData) return ProductNavigation(products: snapshot.data!);
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasData) {
+          return ProductNavigation(products: snapshot.data!);
+        }
         return const Center(child: Text("No Data"));
       },
     );
@@ -65,6 +69,7 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
 
 class ProductNavigation extends StatelessWidget {
   final List<Product> products;
+
   const ProductNavigation({super.key, required this.products});
 
   @override
@@ -140,11 +145,7 @@ class HomeProductPrice extends StatelessWidget {
             visible: !_notNullAndNotEmpty(product.regularPrice),
             child: Text(
               "${product.price} QA",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 4),
@@ -152,12 +153,7 @@ class HomeProductPrice extends StatelessWidget {
             visible: product.regularPrice != product.salePrice,
             child: Text(
               "${product.regularPrice} QA",
-              style: const TextStyle(
-                fontSize: 14,
-                decoration: TextDecoration.lineThrough,
-                color: AppColors.accentColor,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 14, decoration: TextDecoration.lineThrough, color: AppColors.accentColor, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 4),
@@ -165,11 +161,7 @@ class HomeProductPrice extends StatelessWidget {
             visible: product.regularPrice != product.salePrice,
             child: Text(
               "${product.salePrice} QA",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         ],
