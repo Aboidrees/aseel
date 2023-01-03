@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:aseel/api_service.dart';
 import 'package:aseel/constants/colors.dart';
-import 'package:aseel/models/customer.dart';
+import 'package:aseel/models/customer_model.dart';
 import 'package:aseel/utils/form_helper.dart';
 import 'package:aseel/utils/progress_hud.dart';
 import 'package:aseel/utils/validator_service.dart';
@@ -17,7 +17,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   late APIService apiService;
-  Customer model = Customer();
+  CustomerModel model = CustomerModel();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool hidePassword = true;
   bool isApiCallProcess = false;

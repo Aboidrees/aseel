@@ -1,10 +1,10 @@
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
 import 'package:aseel/widgets/widget_product_details.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailsPage extends BasePage {
-  final Product product;
+  final ProductModel product;
 
   const ProductDetailsPage({super.key, required this.product});
 

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-class LoginResponse {
+class LoginResponseModel {
   bool success;
   int statusCode;
   String code;
   String message;
-  Data? data;
-  LoginResponse({
+  DataModel? data;
+  LoginResponseModel({
     required this.success,
     required this.statusCode,
     required this.code,
@@ -29,22 +29,22 @@ class LoginResponse {
     return map;
   }
 
-  factory LoginResponse.fromMap(Map<String, dynamic> map) {
-    return LoginResponse(
+  factory LoginResponseModel.fromMap(Map<String, dynamic> map) {
+    return LoginResponseModel(
       success: map['success'] as bool,
       statusCode: map['statusCode'] as int,
       code: map['code'] as String,
       message: map['message'] as String,
-      data: map['data'] != null ? Data.fromMap(map['data'] as Map<String, dynamic>) : null,
+      data: map['data'] != null ? DataModel.fromMap(map['data'] as Map<String, dynamic>) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory LoginResponse.fromJson(String source) => LoginResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory LoginResponseModel.fromJson(String source) => LoginResponseModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
-class Data {
+class DataModel {
   String token;
   int id;
   String email;
@@ -53,7 +53,7 @@ class Data {
   String? lastName;
   String? displayName;
 
-  Data({
+  DataModel({
     this.token = "",
     this.id = -1,
     this.email = "",
@@ -75,8 +75,8 @@ class Data {
     };
   }
 
-  factory Data.fromMap(Map<String, dynamic> map) {
-    return Data(
+  factory DataModel.fromMap(Map<String, dynamic> map) {
+    return DataModel(
       token: map['token'] as String,
       id: map['id'] as int,
       email: map['email'] as String,
@@ -89,5 +89,5 @@ class Data {
 
   String toJson() => json.encode(toMap());
 
-  factory Data.fromJson(String source) => Data.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory DataModel.fromJson(String source) => DataModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

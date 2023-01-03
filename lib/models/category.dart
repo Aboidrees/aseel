@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aseel/models/image.dart';
+import 'package:aseel/models/image_model.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Category {
@@ -8,7 +8,7 @@ class Category {
   String? name;
   String? description;
   int? parent;
-  Image? image;
+  ImageModel? image;
 
   Category({
     required this.id,
@@ -34,7 +34,7 @@ class Category {
       name: map['name'] != null ? map['name'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
       parent: map['parent'] != null ? map['parent'] as int : null,
-      image: map['image'] != null ? Image.fromMap(map['image'] as Map<String, dynamic>) : null,
+      image: map['image'] != null ? ImageModel.fromMap(map['image'] as Map<String, dynamic>) : null,
     );
   }
 

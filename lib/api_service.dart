@@ -3,14 +3,16 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:aseel/config.dart';
+import 'package:aseel/models/cart_model.dart';
 import 'package:aseel/models/category.dart';
-import 'package:aseel/models/customer.dart';
-import 'package:aseel/models/login%20_response.dart';
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/customer_model.dart';
+import 'package:aseel/models/login%20_response_model.dart';
+import 'package:aseel/models/product_model.dart';
+import 'package:aseel/token.dart';
 import 'package:dio/dio.dart';
 
 class APIService {
-  Future<bool> createCustomer(Customer model) async {
+  Future<bool> createCustomer(CustomerModel model) async {
     var authToken = base64.encode(
       utf8.encode("${Config.key}:${Config.secret}"),
     );
@@ -19,7 +21,7 @@ class APIService {
 
     try {
       var response = await Dio().post(
-        Config.storeApiUrl + EndPoints.customers,
+        EndPoints.customers,
         data: model.toJson(),
         options: Options(
           headers: {
@@ -41,10 +43,10 @@ class APIService {
     return ret;
   }
 
-  Future<LoginResponse?> login(String username, String password) async {
+  Future<LoginResponseModel?> login(String username, String password) async {
     try {
       var response = await Dio().post(
-        Config.tokenUrl,
+        EndPoints.token,
         data: FormData.fromMap({"username": username, "password": password}),
         options: Options(
           headers: {HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded"},
@@ -52,7 +54,7 @@ class APIService {
       );
 
       if (response.statusCode == 200) {
-        return LoginResponse.fromMap(response.data);
+        return LoginResponseModel.fromMap(response.data);
       }
     } on DioError catch (e) {
       log(e.response.toString());
@@ -63,7 +65,7 @@ class APIService {
   Future<List<Category>> getCategories() async {
     var categories = <Category>[];
     try {
-      var url = "${Config.storeApiUrl}${EndPoints.categories}?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
+      var url = "${EndPoints.categories}?consumer_key=${Config.key}&consumer_secret=${Config.secret}";
 
       var response = await Dio().get(
         url.toString(),
@@ -82,16 +84,17 @@ class APIService {
     return categories;
   }
 
-  Future<List<Product>> getProducts({
+  Future<List<ProductModel>> getProducts({
     int? pageNumber,
     int? pageSize,
     String? strSearch,
     String? tagName,
     String? categoryId,
+    List<int>? productsIds,
     String? sortBy,
     String? sortOrder = "asc",
   }) async {
-    var products = <Product>[];
+    var products = <ProductModel>[];
     try {
       String parameter = "";
       if (strSearch != null) parameter += '&search=$strSearch';
@@ -101,7 +104,9 @@ class APIService {
       if (categoryId != null) parameter += '&category=$categoryId';
       if (sortBy != null) parameter += '&orderby=$sortBy';
       if (sortOrder != null) parameter += '&order=$sortOrder';
-      var url = "${Config.storeApiUrl}${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}$parameter";
+      if (productsIds != null) parameter += '&include=${productsIds.join(',')}';
+
+      var url = "${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}$parameter";
 
       var response = await Dio().get(
         url.toString(),
@@ -109,12 +114,45 @@ class APIService {
       );
       if (response.statusCode == 200) {
         for (var product in response.data as List) {
-          products.add(Product.fromMap(product));
+          products.add(ProductModel.fromMap(product));
         }
       }
     } on DioError catch (e) {
       log(e.response.toString());
     }
     return products;
+  }
+
+  Future<CartDetailsModel?> addToCart(AddToCartModel addToCartParams) async {
+    try {
+      var response = await Dio().post(
+        EndPoints.addToCart,
+        data: addToCartParams.toJson(),
+        options: Options(headers: {HttpHeaders.authorizationHeader: "Bearer $token", HttpHeaders.contentTypeHeader: "application/json"}),
+      );
+      if (response.statusCode == 200) return CartDetailsModel.fromMap(response.data);
+    } on DioError catch (e) {
+      log(e.response.toString());
+    }
+    return null;
+  }
+
+  Future<CartDetailsModel?> getCartDetails() async {
+    try {
+      var response = await Dio().get(
+        EndPoints.getCart,
+        options: Options(headers: {HttpHeaders.authorizationHeader: "Bearer $token", HttpHeaders.contentTypeHeader: "application/json"}),
+      );
+
+      if (response.statusCode == 200) {
+        return CartDetailsModel.fromJson(response.data);
+      } else {
+        log(response.toString());
+        return null;
+      }
+    } on DioError catch (e) {
+      log(e.response.toString());
+      return null;
+    }
   }
 }

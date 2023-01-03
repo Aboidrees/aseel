@@ -1,6 +1,6 @@
 import 'package:aseel/api_service.dart';
 import 'package:aseel/constants/colors.dart';
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/product_model.dart';
 import 'package:aseel/widgets/product_image.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +54,7 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
   Widget _buildProductsNavigation() {
     return FutureBuilder(
       future: apiService.getProducts(tagName: widget.tagId),
-      builder: (context, AsyncSnapshot<List<Product>> snapshot) {
+      builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -68,7 +68,7 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
 }
 
 class ProductNavigation extends StatelessWidget {
-  final List<Product> products;
+  final List<ProductModel> products;
 
   const ProductNavigation({super.key, required this.products});
 
@@ -120,7 +120,7 @@ class ProductNavigation extends StatelessWidget {
 class HomeProductPrice extends StatelessWidget {
   const HomeProductPrice({super.key, required this.product});
 
-  final Product product;
+  final ProductModel product;
 
   bool _notNullAndNotEmpty(String? value) {
     if (value == null) return false;

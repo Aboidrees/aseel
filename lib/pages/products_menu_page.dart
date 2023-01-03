@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
-import 'package:aseel/providers/provider_product.dart';
+import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/widgets/widget_product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,8 +38,9 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        productController.setLoadingState(LoadMoreStatus.loading);
-        productController.fetchProducts(++_page);
+        productController
+          ..setLoadingState(LoadMoreStatus.loading)
+          ..fetchProducts(++_page);
       }
     });
 
@@ -56,7 +57,15 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
   }
 
   @override
-  Widget pageUI() => _productsList();
+  Widget pageUI() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        _productsFilter(),
+        Flexible(child: _productsList()),
+      ],
+    );
+  }
 
   Widget _productsList() {
     return Consumer<ProductProvider>(
@@ -74,10 +83,9 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
     );
   }
 
-  Widget _buildProductsList(List<Product> products, bool isLoadingMore) {
+  Widget _buildProductsList(List<ProductModel> products, bool isLoadingMore) {
     return Column(
       children: [
-        _productsFilter(),
         Flexible(
           child: GridView.count(
             shrinkWrap: true,

@@ -1,18 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class Customer {
+class CustomerModel {
   String? email;
   String? firstName;
   String? lastName;
   String? password;
 
-  Customer({
-    this.email = "",
-    this.firstName = "",
-    this.lastName = "",
-    this.password = "",
-  });
+  CustomerModel({this.email = "", this.firstName = "", this.lastName = "", this.password = ""});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -24,8 +19,8 @@ class Customer {
     };
   }
 
-  factory Customer.fromMap(Map<String, dynamic> map) {
-    return Customer(
+  factory CustomerModel.fromMap(Map<String, dynamic> map) {
+    return CustomerModel(
       email: map['email'] != null ? map['email'] as String : null,
       firstName: map['firstName'] != null ? map['firstName'] as String : null,
       lastName: map['lastName'] != null ? map['lastName'] as String : null,
@@ -35,5 +30,5 @@ class Customer {
 
   String toJson() => json.encode(toMap());
 
-  factory Customer.fromJson(String source) => Customer.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CustomerModel.fromJson(String source) => CustomerModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

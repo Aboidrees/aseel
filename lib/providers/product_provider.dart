@@ -1,5 +1,5 @@
 import 'package:aseel/api_service.dart';
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class SortBy {
@@ -14,13 +14,13 @@ enum LoadMoreStatus { initial, loading, stable }
 
 class ProductProvider with ChangeNotifier {
   late APIService _apiService;
-  late List<Product> _productsList;
+  late List<ProductModel> _productsList;
   late SortBy _sortBy;
   LoadMoreStatus _loadMoreStatus = LoadMoreStatus.stable;
   int pageSize = 10;
 
   // getters
-  List<Product> get allProducts => _productsList;
+  List<ProductModel> get allProducts => _productsList;
 
   double get totalRecords => _productsList.length.toDouble();
 
@@ -32,7 +32,7 @@ class ProductProvider with ChangeNotifier {
 
   void resetStream() {
     _apiService = APIService();
-    _productsList = <Product>[];
+    _productsList = <ProductModel>[];
   }
 
   setLoadingState(LoadMoreStatus loadMoreStatus) {
@@ -51,8 +51,9 @@ class ProductProvider with ChangeNotifier {
     String? categoryId,
     String? sortBy,
     String? sortOrder = 'asc',
+    Function? onCallback,
   }) async {
-    List<Product> products = await _apiService.getProducts(
+    List<ProductModel> products = await _apiService.getProducts(
       strSearch: strSearch,
       tagName: tagName,
       pageNumber: pageNumber,
@@ -65,6 +66,7 @@ class ProductProvider with ChangeNotifier {
     if (products.isNotEmpty) _productsList.addAll(products);
 
     setLoadingState(LoadMoreStatus.stable);
+    if (onCallback != null) onCallback();
     notifyListeners();
   }
 }

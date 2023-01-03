@@ -1,11 +1,11 @@
 import 'package:aseel/constants/colors.dart';
-import 'package:aseel/models/product.dart';
+import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/product_details_page.dart';
 import 'package:aseel/widgets/product_image.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatelessWidget {
-  final Product product;
+  final ProductModel product;
 
   const ProductCard({super.key, required this.product});
 

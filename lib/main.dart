@@ -1,6 +1,9 @@
+import 'package:aseel/pages/base.dart';
 import 'package:aseel/pages/home_page.dart';
 import 'package:aseel/pages/products_menu_page.dart';
-import 'package:aseel/providers/provider_product.dart';
+import 'package:aseel/providers/cart_provider.dart';
+import 'package:aseel/providers/loader_provider.dart';
+import 'package:aseel/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +23,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ProductProvider(),
           child: const ProductsMenuPage(),
-        )
+        ),
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => LoaderProvider(), child: const BasePage()),
       ],
       child: MaterialApp(
         title: 'الأصيل',
