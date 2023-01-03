@@ -15,18 +15,16 @@ class CartProvider with ChangeNotifier {
 
   CartDetailsModel? get cartDetails => _cartDetails;
 
-  initialize() => _apiService.getCartDetails().then(
-        (value) {
-          _cartDetails = value;
-          notifyListeners();
-        },
-      );
+  initialize() {
+    _apiService.getCartDetails().then((value) {
+      _cartDetails = value;
+      notifyListeners();
+    });
+  }
 
   void addToCart(AddToCartModel payload, {Function? onCallback}) async {
     await _apiService.addToCart(payload).then((cartDetails) {
-      if (cartDetails != null) {
-        _cartDetails = cartDetails;
-      }
+      if (cartDetails != null) _cartDetails = cartDetails;
       if (onCallback != null) onCallback();
       notifyListeners();
     });

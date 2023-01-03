@@ -49,7 +49,7 @@ class CartDetailsModel {
 
   factory CartDetailsModel.fromMap(Map<String, dynamic> map) {
     return CartDetailsModel(
-      id: map['cart_key'] as String,
+      id: map['cart_key'].toString(),
       items: List<CartItemModel>.from(map['items'].map((x) => CartItemModel.fromMap(x as Map<String, dynamic>))),
     );
   }

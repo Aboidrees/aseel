@@ -145,7 +145,7 @@ class APIService {
       );
 
       if (response.statusCode == 200) {
-        return CartDetailsModel.fromJson(response.data);
+        return CartDetailsModel.fromMap(response.data);
       } else {
         log(response.toString());
         return null;
