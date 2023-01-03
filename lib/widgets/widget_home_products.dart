@@ -132,8 +132,6 @@ class HomeProductPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final price = _notNullAndNotEmpty(product.regularPrice) ? product.regularPrice : product.price;
-
     return Container(
       margin: const EdgeInsets.all(4),
       width: 130,
