@@ -17,20 +17,21 @@ class Product {
 
   List<Image>? images;
   List<Category>? categories;
+  List<Attribute>? attributes;
 
-  Product({
-    required this.id,
-    required this.name,
-    this.description,
-    this.shortDescription,
-    this.sku,
-    this.price,
-    this.regularPrice,
-    this.salePrice,
-    this.stockStatus,
-    this.images,
-    this.categories,
-  });
+  Product(
+      {required this.id,
+      required this.name,
+      this.description,
+      this.shortDescription,
+      this.sku,
+      this.price,
+      this.regularPrice,
+      this.salePrice,
+      this.stockStatus,
+      this.images,
+      this.categories,
+      this.attributes});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -45,6 +46,7 @@ class Product {
       'stockStatus': stockStatus,
       'images': images?.map((x) => x.toMap()).toList(),
       'categories': categories?.map((x) => x.toMap()).toList(),
+      'attributes': attributes?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -61,7 +63,9 @@ class Product {
         stockStatus: map['stock_status'] != null ? map['stock_status'] as String : null,
         images: map['images'] != null ? List<Image>.from((map['images']).map<Image?>((x) => Image.fromMap(x as Map<String, dynamic>))) : null,
         categories:
-            map['categories'] != null ? List<Category>.from((map['categories']).map<Category?>((x) => Category.fromMap(x as Map<String, dynamic>))) : null);
+            map['categories'] != null ? List<Category>.from((map['categories']).map<Category?>((x) => Category.fromMap(x as Map<String, dynamic>))) : null,
+        attributes:
+            map['attributes'] != null ? List<Attribute>.from((map['attributes']).map<Attribute?>((x) => Category.fromMap(x as Map<String, dynamic>))) : null);
   }
 
   String toJson() => json.encode(toMap());
@@ -82,4 +86,10 @@ class Product {
     double discountPercent = (discount / regularPrice) * 100;
     return discountPercent.round();
   }
+}
+
+class Attribute {
+  int id;
+  String? name;
+  List<String>? options;
 }

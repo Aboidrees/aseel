@@ -13,7 +13,7 @@ class ProductsMenuPage extends BasePage {
   const ProductsMenuPage({super.key, this.categoryId});
 
   @override
-  BasePageState createState() => _ProductsMenuPageState();
+  BasePageState<ProductsMenuPage> createState() => _ProductsMenuPageState();
 }
 
 class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
@@ -44,7 +44,6 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
     });
 
     _searchQuery.addListener(() {
-      print(_searchQuery.text);
       if (_debounce != null && (_debounce?.isActive ?? false)) _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
         productController
