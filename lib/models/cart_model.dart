@@ -36,14 +36,19 @@ class AddToCartModel {
 class CartDetailsModel {
   String? id;
   List<CartItemModel>? items;
-  Map<String, String>? totals;
+  Map<String, dynamic>? totals;
 
-  CartDetailsModel({this.id, this.items, this.totals});
+  CartDetailsModel({
+    this.id,
+    this.items,
+    this.totals,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'items': items?.map((x) => x.toMap()).toList(),
+      'totals': totals as Map<String, dynamic>,
     };
   }
 
@@ -51,6 +56,7 @@ class CartDetailsModel {
     return CartDetailsModel(
       id: map['cart_key'].toString(),
       items: List<CartItemModel>.from(map['items'].map((x) => CartItemModel.fromMap(x as Map<String, dynamic>))),
+      totals: map['totals'] != null ? Map<String, dynamic>.from((map['totals'] as Map<String, dynamic>)) : null,
     );
   }
 

@@ -66,17 +66,11 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Column(
-                      children: [
-                        for (var attribute in widget.product.attributes ?? []) Text("${attribute.name}:  ${attribute.options?.join(" - ")} "),
-                      ],
+                      children: [for (var attribute in widget.product.attributes ?? []) Text("${attribute.name}:  ${attribute.options?.join(" - ")} ")],
                     ),
                     Text(
                       "${widget.product.salePrice} ريال ",
-                      style: const TextStyle(
-                        fontSize: 25,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -85,6 +79,7 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomStepper(
+                      quantity: 1,
                       lowerLimit: 1,
                       upperLimit: 20,
                       stepValue: 1,
@@ -109,14 +104,15 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                   ],
                 ),
                 const SizedBox(height: 5),
-                ExpandText(labelHeader: "تفاصيل المنتج", desc: widget.product.description ?? "", shortDesc: widget.product.shortDescription ?? ""),
+                ExpandText(
+                  labelHeader: "تفاصيل المنتج",
+                  desc: widget.product.description ?? "",
+                  shortDesc: widget.product.shortDescription ?? "",
+                ),
                 Visibility(visible: widget.product.relatedIds?.isNotEmpty ?? false, child: const Divider()),
                 Visibility(
                   visible: widget.product.relatedIds?.isNotEmpty ?? false,
-                  child: WidgetRelatedProducts(
-                    labelName: "منتجات أخرى",
-                    productsIds: widget.product.relatedIds ?? [],
-                  ),
+                  child: WidgetRelatedProducts(labelName: "منتجات أخرى", productsIds: widget.product.relatedIds ?? []),
                 ),
               ],
             ),

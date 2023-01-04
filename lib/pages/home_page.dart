@@ -1,9 +1,9 @@
 import 'package:aseel/constants/colors.dart';
+import 'package:aseel/pages/cart_page.dart';
 import 'package:aseel/pages/dashboard_page.dart';
 import 'package:aseel/utils/cart_icons.dart';
 import 'package:aseel/widgets/widget_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _widgetList = <Widget>[
     const DashboardPage(),
-    const DashboardPage(),
+    const CartPage(),
     const DashboardPage(),
     const DashboardPage(),
   ];
@@ -27,30 +27,27 @@ class _HomePageState extends State<HomePage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(58),
-          child: WidgetAppBar(context: context),
-        ),
+        appBar: const PreferredSize(preferredSize: Size.fromHeight(58), child: WidgetAppBar()),
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: AppColors.accentColor,
           unselectedItemColor: Colors.black,
           type: BottomNavigationBarType.shifting,
           currentIndex: _index,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(CartIcons.home),
+              icon: IconButton(onPressed: () => setState(() => _index = 0), icon: const Icon(CartIcons.home)),
               label: "Store",
             ),
             BottomNavigationBarItem(
-              icon: Icon(CartIcons.cart),
+              icon: IconButton(onPressed: () => setState(() => _index = 1), icon: const Icon(CartIcons.cart)),
               label: "My Cart",
             ),
             BottomNavigationBarItem(
-              icon: Icon(CartIcons.favorites),
+              icon: IconButton(onPressed: () => setState(() => _index = 2), icon: const Icon(CartIcons.favorites)),
               label: "Favorites",
             ),
             BottomNavigationBarItem(
-              icon: Icon(CartIcons.account),
+              icon: IconButton(onPressed: () => setState(() => _index = 3), icon: const Icon(CartIcons.account)),
               label: "Account",
             ),
           ],

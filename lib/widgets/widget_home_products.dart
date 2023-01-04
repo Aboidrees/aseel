@@ -2,6 +2,7 @@ import 'package:aseel/api_service.dart';
 import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/widgets/product_image.dart';
+import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
 
 class WidgetHomeProducts extends StatefulWidget {
@@ -29,22 +30,7 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
       color: const Color(0x0ff4f7fa),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Text(widget.labelName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('عرض الكل', style: TextStyle(color: AppColors.accentColor)),
-                ),
-              ),
-            ],
-          ),
+          WidgetSectionHead(headLabel: widget.labelName),
           _buildProductsNavigation(),
         ],
       ),
@@ -108,7 +94,7 @@ class ProductNavigation extends StatelessWidget {
               ),
 
               //
-              HomeProductPrice(product: product),
+              ProductPrice(product: product),
             ],
           );
         },
@@ -117,52 +103,47 @@ class ProductNavigation extends StatelessWidget {
   }
 }
 
-class HomeProductPrice extends StatelessWidget {
-  const HomeProductPrice({super.key, required this.product});
+class ProductPrice extends StatelessWidget {
+  const ProductPrice({super.key, required this.product});
 
   final ProductModel product;
 
-  bool _notNullAndNotEmpty(String? value) {
-    if (value == null) return false;
-
-    if (value.isEmpty) return false;
-
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(4),
-      width: 130,
-      alignment: Alignment.centerRight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Visibility(
-            visible: !_notNullAndNotEmpty(product.regularPrice),
-            child: Text(
-              "${product.price} QA",
-              style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
+    var sale = double.tryParse(product.salePrice.toString()) ?? 0.0;
+    var regular = double.tryParse(product.regularPrice.toString()) ?? double.tryParse(product.price.toString()) ?? 0.0;
+    bool productHasSale = regular > sale && sale != 0.0;
+
+    return Visibility(
+      visible: sale > 0 || regular > 0,
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // regular
+            Text(
+              "$regular  ريال",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                decoration: productHasSale ? TextDecoration.lineThrough : null,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(width: 4),
-          Visibility(
-            visible: product.regularPrice != product.salePrice,
-            child: Text(
-              "${product.regularPrice} QA",
-              style: const TextStyle(fontSize: 14, decoration: TextDecoration.lineThrough, color: AppColors.accentColor, fontWeight: FontWeight.bold),
+            Visibility(visible: productHasSale, child: const SizedBox(width: 4)),
+            // sale
+            Visibility(
+              visible: productHasSale,
+              child: Text(
+                "${product.salePrice} QA",
+                style: const TextStyle(fontSize: 14, color: AppColors.accentColor, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          const SizedBox(width: 4),
-          Visibility(
-            visible: product.regularPrice != product.salePrice,
-            child: Text(
-              "${product.salePrice} QA",
-              style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

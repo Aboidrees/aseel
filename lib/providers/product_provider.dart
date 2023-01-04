@@ -18,6 +18,7 @@ class ProductProvider with ChangeNotifier {
   late SortBy _sortBy;
   LoadMoreStatus _loadMoreStatus = LoadMoreStatus.stable;
   int pageSize = 10;
+  late ProductModel _currentProduct;
 
   // getters
   List<ProductModel> get allProducts => _productsList;
@@ -41,6 +42,13 @@ class ProductProvider with ChangeNotifier {
 
   setSortOrder(SortBy sortBy) {
     _sortBy = sortBy;
+    notifyListeners();
+  }
+
+  ProductModel get currentProduct => _currentProduct;
+
+  setCurrentProduct(ProductModel product) {
+    _currentProduct = product;
     notifyListeners();
   }
 

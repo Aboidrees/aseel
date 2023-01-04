@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class WidgetAppBar extends StatelessWidget {
-  const WidgetAppBar({Key? key, required this.context}) : super(key: key);
-
-  final BuildContext context;
+  const WidgetAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,28 +17,27 @@ class WidgetAppBar extends StatelessWidget {
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       automaticallyImplyLeading: true,
       title: const Text("الأصيل", style: TextStyle(color: Colors.white)),
+      actionsIconTheme: const IconThemeData(size: 32),
       actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none, size: 32)),
+        Center(child: IconButton(onPressed: () {}, splashRadius: 24, padding: EdgeInsets.zero, icon: const Icon(Icons.notifications_none))),
         const SizedBox(width: 10),
         Stack(
           children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart, size: 32)),
+            Center(child: IconButton(onPressed: () {}, splashRadius: 24, padding: EdgeInsets.zero, icon: const Icon(Icons.shopping_cart))),
             Visibility(
               visible: Provider.of<CartProvider>(context).cartDetails?.items?.isNotEmpty ?? false,
-              child: Positioned(
-                child: Container(
-                  height: 20,
-                  width: 20,
-                  decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(25)),
-                  child: Center(
-                    child: Text(
-                      Provider.of<CartProvider>(context).cartDetails?.items?.length.toString() ?? "",
-                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
-                    ),
+              child: Container(
+                height: 20,
+                width: 20,
+                decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(9)),
+                child: Center(
+                  child: Text(
+                    Provider.of<CartProvider>(context).cartDetails?.items?.length.toString() ?? "",
+                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ],

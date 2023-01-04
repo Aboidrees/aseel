@@ -1,7 +1,7 @@
 import 'package:aseel/api_service.dart';
-import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/category.dart' as category_model;
 import 'package:aseel/pages/products_menu_page.dart';
+import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
 
 class WidgetHomeCategories extends StatefulWidget {
@@ -26,33 +26,17 @@ class _WidgetHomeCategoriesState extends State<WidgetHomeCategories> {
       color: Colors.white,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Text("كل التصنيفات", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-                child: Text("إظهار الكل", style: TextStyle(color: AppColors.accentColor)),
-              )
-            ],
+          const WidgetSectionHead(headLabel: "كل التصنيفات"),
+          FutureBuilder(
+            future: apiService.getCategories(),
+            builder: (context, AsyncSnapshot<List<category_model.Category>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+              if (snapshot.hasData) return CategoryNavigation(categories: snapshot.data!);
+              return const Center(child: Text("No Data"));
+            },
           ),
-          _buildCategoriesNavigation(),
         ],
       ),
-    );
-  }
-
-  Widget _buildCategoriesNavigation() {
-    return FutureBuilder(
-      future: apiService.getCategories(),
-      builder: (context, AsyncSnapshot<List<category_model.Category>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        if (snapshot.hasData) return CategoryNavigation(categories: snapshot.data!);
-        return const Center(child: Text("No Data"));
-      },
     );
   }
 }

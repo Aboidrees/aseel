@@ -19,22 +19,13 @@ class BasePageState<T extends BasePage> extends State<T> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(58),
-              child: WidgetAppBar(context: context),
-            ),
-            body: ProgressHUD(
-              inAsyncCall: controller.isApiCallProcess,
-              opacity: 0.3,
-              child: pageUI(),
-            ),
+            appBar: const PreferredSize(preferredSize: Size.fromHeight(58), child: WidgetAppBar()),
+            body: ProgressHUD(inAsyncCall: controller.isApiCallProcess, opacity: 0.3, child: pageUI()),
           ),
         );
       },
     );
   }
 
-  Widget pageUI() {
-    return Container();
-  }
+  Widget pageUI() => const Placeholder();
 }

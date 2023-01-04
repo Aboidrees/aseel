@@ -21,11 +21,11 @@ class ProductImage extends StatelessWidget {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.circular(0),
       child: FadeInImage(
-        height: height,
-        width: width,
         fit: fit,
-        placeholder: const AssetImage('assets/images/image_placeholder.png'),
+        height: height,
+        width: width ?? double.infinity,
         image: NetworkImage(imageURL ?? ""),
+        placeholder: const AssetImage('assets/images/image_placeholder.png'),
         imageErrorBuilder: (_, __, ___) => Image.asset('assets/images/image_placeholder.png', width: width, height: height),
         placeholderErrorBuilder: (_, __, ___) => const Center(child: CircularProgressIndicator()),
         placeholderFit: BoxFit.cover,

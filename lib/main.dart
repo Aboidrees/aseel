@@ -1,5 +1,7 @@
 import 'package:aseel/pages/base.dart';
+import 'package:aseel/pages/cart_page.dart';
 import 'package:aseel/pages/home_page.dart';
+import 'package:aseel/pages/product_details_page.dart';
 import 'package:aseel/pages/products_menu_page.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
@@ -20,11 +22,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => ProductProvider(),
-          child: const ProductsMenuPage(),
-        ),
-        ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => ProductProvider(), child: const ProductsMenuPage()),
+        ChangeNotifierProvider(create: (context) => CartProvider(), child: const ProductDetailsPage()),
+        ChangeNotifierProvider(create: (context) => CartProvider(), child: const CartPage()),
         ChangeNotifierProvider(create: (context) => LoaderProvider(), child: const BasePage()),
       ],
       child: MaterialApp(

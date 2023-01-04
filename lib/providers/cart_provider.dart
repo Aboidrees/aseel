@@ -6,16 +6,27 @@ class CartProvider with ChangeNotifier {
   late APIService _apiService;
   late CartDetailsModel? _cartDetails;
 
+  double get totalRecoreds => _cartDetails?.items?.length.toDouble() ?? 0.0;
+  double get totalAmount =>
+      _cartDetails?.items != null ? _cartDetails?.items?.map<double>((e) => e.price * e.quantity).reduce((value, element) => value + element) : 0.0;
+
   CartProvider() {
     _apiService = APIService();
     _cartDetails = CartDetailsModel();
-    initialize();
+    updateCartDetails();
     notifyListeners();
   }
 
   CartDetailsModel? get cartDetails => _cartDetails;
 
-  initialize() {
+  resetStream() {
+    _apiService = APIService();
+    _cartDetails = CartDetailsModel();
+  }
+
+  updateCartDetails() {
+    if (cartDetails == null) resetStream();
+
     _apiService.getCartDetails().then((value) {
       _cartDetails = value;
       notifyListeners();
@@ -23,6 +34,8 @@ class CartProvider with ChangeNotifier {
   }
 
   void addToCart(AddToCartModel payload, {Function? onCallback}) async {
+    if (cartDetails == null) resetStream();
+
     await _apiService.addToCart(payload).then((cartDetails) {
       if (cartDetails != null) _cartDetails = cartDetails;
       if (onCallback != null) onCallback();

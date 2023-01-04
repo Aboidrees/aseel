@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomStepper extends StatefulWidget {
   final int lowerLimit;
   final int upperLimit;
+  final quantity;
   final int stepValue;
   final double iconSize;
   final ValueChanged<dynamic> onChanged;
@@ -14,6 +15,7 @@ class CustomStepper extends StatefulWidget {
     required this.stepValue,
     required this.iconSize,
     required this.onChanged,
+    required this.quantity,
   });
 
   @override
@@ -21,25 +23,26 @@ class CustomStepper extends StatefulWidget {
 }
 
 class _CustomStepperState extends State<CustomStepper> {
-  late int quantity;
+  late int value;
+
   @override
   void initState() {
-    quantity = widget.lowerLimit;
+    value = widget.quantity;
     super.initState();
   }
 
   _remove() {
-    if (quantity > widget.lowerLimit) setState(() => widget.onChanged(--quantity));
+    if (value > widget.lowerLimit) setState(() => widget.onChanged(--value));
   }
 
   _add() {
-    if (quantity < widget.upperLimit) setState(() => widget.onChanged(++quantity));
+    if (value < widget.upperLimit) setState(() => widget.onChanged(++value));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
+      height: 18 + widget.iconSize,
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(25),
@@ -48,12 +51,12 @@ class _CustomStepperState extends State<CustomStepper> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(icon: const Icon(Icons.remove), splashRadius: 20, onPressed: _remove),
+          IconButton(icon: Icon(Icons.remove, size: widget.iconSize), splashRadius: 20, onPressed: _remove),
           SizedBox(
             width: widget.iconSize,
-            child: Text("$quantity", textAlign: TextAlign.center, style: TextStyle(fontSize: widget.iconSize * 0.8)),
+            child: Text("$value", textAlign: TextAlign.center, style: TextStyle(fontSize: widget.iconSize * 0.8)),
           ),
-          IconButton(icon: const Icon(Icons.add), splashRadius: 20, onPressed: _add),
+          IconButton(icon: Icon(Icons.add, size: widget.iconSize), splashRadius: 20, onPressed: _add),
         ],
       ),
     );

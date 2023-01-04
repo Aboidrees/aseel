@@ -1,8 +1,10 @@
-import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/product_details_page.dart';
+import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/widgets/product_image.dart';
+import 'package:aseel/widgets/widget_home_products.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -11,75 +13,72 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var productProvider = Provider.of<ProductProvider>(context);
+
     return GestureDetector(
+      // ignore: todo
       // TODO: save the current product in the provider.
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsPage(product: product))),
+
+      onTap: () {
+        productProvider.setCurrentProduct(product);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductDetailsPage()));
+      },
       child: Container(
-        width: 120,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [BoxShadow(color: Color(0xFFF8F8F8), blurRadius: 15, spreadRadius: 10)],
         ),
         margin: const EdgeInsets.all(10),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: ProductImage(
-                      width: 110,
-                      height: 110,
-                      imageURL: product.images?[0].url,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  Visibility(
-                    visible: product.calculateDiscount() > 0,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(50)),
-                        child: Text(
-                          'خصم ${product.calculateDiscount()}%',
-                          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
+        // padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Stack(
+              children: [
+                ProductImage(imageURL: product.images?[0].url, borderRadius: BorderRadius.circular(20)),
+                Visibility(
+                  visible: product.calculateDiscount() > 0,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(50)),
+                      child: Text(
+                        'خصم ${product.calculateDiscount()}%',
+                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                ],
-              ),
-              Text(
-                product.name,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Visibility(
-                    visible: product.regularPrice != product.salePrice,
-                    child: Text(
-                      "${product.regularPrice} QA",
-                      style: const TextStyle(fontSize: 14, decoration: TextDecoration.lineThrough, color: AppColors.accentColor, fontWeight: FontWeight.bold),
-                    ),
+                ),
+                Positioned(
+                  left: 5,
+                  bottom: 5,
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(20)),
+                    child: ProductPrice(product: product),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "${product.regularPrice} QA",
-                    style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
-            ],
-          ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                height: 50,
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  product.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

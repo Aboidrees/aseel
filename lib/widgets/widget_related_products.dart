@@ -30,24 +30,20 @@ class _WidgetRelatedProductsState extends State<WidgetRelatedProducts> {
       child: Column(
         children: [
           WidgetSectionHead(headLabel: widget.labelName),
-          _buildProductsNavigation(),
+          FutureBuilder(
+            future: apiService.getProducts(productsIds: widget.productsIds),
+            builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasData) {
+                return ProductNavigation(products: snapshot.data!);
+              }
+              return const Center(child: Text("No Data"));
+            },
+          )
         ],
       ),
-    );
-  }
-
-  Widget _buildProductsNavigation() {
-    return FutureBuilder(
-      future: apiService.getProducts(productsIds: widget.productsIds),
-      builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasData) {
-          return ProductNavigation(products: snapshot.data!);
-        }
-        return const Center(child: Text("No Data"));
-      },
     );
   }
 }

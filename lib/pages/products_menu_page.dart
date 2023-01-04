@@ -88,22 +88,18 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
       children: [
         Flexible(
           child: GridView.count(
-            shrinkWrap: true,
+            shrinkWrap: false,
             controller: _scrollController,
             crossAxisCount: 2,
             physics: const ClampingScrollPhysics(),
+            childAspectRatio: 0.67,
             scrollDirection: Axis.vertical,
             children: products.map((product) => ProductCard(product: product)).toList(),
           ),
         ),
         Visibility(
           visible: isLoadingMore,
-          child: Container(
-            width: 50,
-            height: 50,
-            padding: const EdgeInsets.all(15),
-            child: const CircularProgressIndicator(),
-          ),
+          child: Container(width: 50, height: 50, padding: const EdgeInsets.all(15), child: const CircularProgressIndicator()),
         )
       ],
     );
