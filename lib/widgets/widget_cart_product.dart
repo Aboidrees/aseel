@@ -1,4 +1,3 @@
-import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/cart_model.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
@@ -65,19 +64,6 @@ class _WidgetCartProductState extends State<WidgetCartProduct> {
               //   style: const TextStyle(color: Colors.black),
               // ),
             ]),
-            MaterialButton(
-              shape: const CircleBorder(),
-              color: AppColors.accentColor,
-              child: const Icon(Icons.delete, color: Colors.white, size: 18),
-              onPressed: () {
-                Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
-                var cartProvider = Provider.of<CartProvider>(context, listen: false);
-
-                cartProvider.removeFromCart(cartItem.id, onCallback: () {
-                  Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
-                });
-              },
-            ),
           ],
         ),
       ),
@@ -104,6 +90,14 @@ class ItemQuantityController extends StatelessWidget {
           Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
           var cartProvider = Provider.of<CartProvider>(context, listen: false);
           cartProvider.updateQuantity(cartItem.id, value, onCallback: () {
+            Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
+          });
+        },
+        onRemove: () {
+          Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
+          var cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+          cartProvider.removeFromCart(cartItem.id, onCallback: () {
             Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
           });
         },

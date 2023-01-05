@@ -1,3 +1,4 @@
+import 'package:aseel/r.dart';
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -25,8 +26,8 @@ class ProductImage extends StatelessWidget {
         height: height,
         width: width ?? double.infinity,
         image: NetworkImage(imageURL ?? ""),
-        placeholder: const AssetImage('assets/images/image_placeholder.png'),
-        imageErrorBuilder: (_, __, ___) => Image.asset('assets/images/image_placeholder.png', width: width, height: height),
+        placeholder: const AssetImage(AssetImages.imagePlaceholder),
+        imageErrorBuilder: (_, __, ___) => Image.asset(AssetImages.imagePlaceholder, width: width, height: height),
         placeholderErrorBuilder: (_, __, ___) => const Center(child: CircularProgressIndicator()),
         placeholderFit: BoxFit.cover,
       ),

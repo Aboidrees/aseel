@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
+import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/widgets/widget_product_card.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
 
   @override
   void initState() {
+    Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
+
     var productController = Provider.of<ProductProvider>(context, listen: false);
     productController
       ..resetStream()

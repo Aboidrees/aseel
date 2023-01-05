@@ -16,7 +16,6 @@ class ProductCard extends StatelessWidget {
     var productProvider = Provider.of<ProductProvider>(context);
 
     return GestureDetector(
-      // ignore: todo
       // TODO: save the current product in the provider.
 
       onTap: () {
@@ -69,13 +68,7 @@ class ProductCard extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 padding: const EdgeInsets.all(5),
-                child: Text(
-                  product.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
-                ),
+                child: Text(product.name, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
               ),
             ),
           ],

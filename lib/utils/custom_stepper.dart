@@ -6,6 +6,7 @@ class CustomStepper extends StatefulWidget {
   final int quantity;
   final int stepValue;
   final double iconSize;
+  final Function? onRemove;
   final ValueChanged<dynamic> onChanged;
 
   const CustomStepper({
@@ -16,6 +17,7 @@ class CustomStepper extends StatefulWidget {
     required this.iconSize,
     required this.onChanged,
     required this.quantity,
+    this.onRemove,
   });
 
   @override
@@ -33,6 +35,7 @@ class _CustomStepperState extends State<CustomStepper> {
 
   _remove() {
     if (value > widget.lowerLimit) setState(() => widget.onChanged(--value));
+    if (widget.onRemove != null && value == widget.lowerLimit) widget.onRemove!();
   }
 
   _add() {
@@ -41,6 +44,8 @@ class _CustomStepperState extends State<CustomStepper> {
 
   @override
   Widget build(BuildContext context) {
+    IconData removeIcon = (widget.onRemove != null && value <= widget.lowerLimit) ? Icons.delete : Icons.remove;
+
     return Container(
       height: 18 + widget.iconSize,
       decoration: BoxDecoration(
@@ -51,7 +56,7 @@ class _CustomStepperState extends State<CustomStepper> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(icon: Icon(Icons.remove, size: widget.iconSize), splashRadius: 20, onPressed: _remove),
+          IconButton(icon: Icon(removeIcon, size: widget.iconSize), splashRadius: 20, onPressed: _remove),
           SizedBox(
             width: widget.iconSize,
             child: Text("$value", textAlign: TextAlign.center, style: TextStyle(fontSize: widget.iconSize * 0.8)),
