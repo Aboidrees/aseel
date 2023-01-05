@@ -1,7 +1,9 @@
+import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/cart_model.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/utils/custom_stepper.dart';
+import 'package:aseel/utils/util.dart';
 import 'package:aseel/widgets/product_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,16 +55,6 @@ class _WidgetCartProductState extends State<WidgetCartProduct> {
                 textDirection: TextDirection.rtl,
                 style: const TextStyle(color: Colors.black),
               ),
-              // Text(
-              //   "${cartItem.quantity} x ${cartItem.price / 100} ريال = ${cartItem.quantity / 100 * cartItem.price} ريال",
-              //   textDirection: TextDirection.rtl,
-              //   style: const TextStyle(color: Colors.black),
-              // ),
-              // Text(
-              //   "${cartItem.quantity} x ${cartItem.price / 100} ريال = ${cartItem.quantity / 100 * cartItem.price} ريال",
-              //   textDirection: TextDirection.rtl,
-              //   style: const TextStyle(color: Colors.black),
-              // ),
             ]),
           ],
         ),
@@ -74,10 +66,14 @@ class _WidgetCartProductState extends State<WidgetCartProduct> {
 
 class ItemQuantityController extends StatelessWidget {
   final CartItemModel cartItem;
+
   const ItemQuantityController({super.key, required this.cartItem});
 
   @override
   Widget build(BuildContext context) {
+    var loading = context.read<LoaderProvider>();
+    var cart = context.read<CartProvider>();
+
     return SizedBox(
       width: 120,
       child: CustomStepper(
@@ -87,19 +83,26 @@ class ItemQuantityController extends StatelessWidget {
         upperLimit: 20,
         stepValue: 1,
         onChanged: (value) {
-          Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
-          var cartProvider = Provider.of<CartProvider>(context, listen: false);
-          cartProvider.updateQuantity(cartItem.id, value, onCallback: () {
-            Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
-          });
+          // TODO: We need debounce so the user can add
+          loading.setStatus(true);
+          cart.updateQuantity(cartItem.id, value, onCallback: () => loading.setStatus(false));
         },
         onRemove: () {
-          Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
-          var cartProvider = Provider.of<CartProvider>(context, listen: false);
-
-          cartProvider.removeFromCart(cartItem.id, onCallback: () {
-            Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
-          });
+          Utils.showMessage(
+            context,
+            "الأصـــيل",
+            "هل أنت متأكد من حذف هذا المنتج من سلة المشتريات؟",
+            isConfirmationDialog: true,
+            okText: "نعم، اريد حذف المنتج",
+            cancelText: "إلغاء",
+            onOk: () {
+              loading.setStatus(true);
+              cart.removeFromCart(cartItem.id, onCallback: () => loading.setStatus(false));
+            },
+            onCancel: () => Navigator.pop(context),
+            cancelTextStyle: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.bold),
+            okTextStyle: TextStyle(color: Colors.grey.shade600),
+          );
         },
       ),
     );

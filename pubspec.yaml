@@ -35,43 +35,31 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_html: ^2.2.1
+
   google_fonts: ^3.0.1
   lecle_flutter_carousel_pro: ^0.0.1+1
   provider: ^6.0.5
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.11.0"
+  flutter_native_splash: ^2.2.0+1
 
-flutter_icons:
-  image_path_android: "assets/icons/icon.png"
-  image_path_ios: "assets/icons/icon.png"
-  android: true # can specify file name here e.g. "ic_launcher"
-  ios: true
-  adaptive_icon_background: "assets/icons/icon.png" # only available for Android 8.0 devices and above
-  adaptive_icon_foreground: "assets/icons/icon.png" # only available for Android 8.0 devices and above
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  remove_alpha_ios: true
-  background_color: "#FFFFFF"
-  web:
-    generate: true
-    image_path: "assets/icons/icon.png"
-    background_color: "#FFFFFF"
-    theme_color: "#FF0000"
-  windows:
-    generate: true
-    image_path: "assets/icons/icon.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  linux:
-    generate: true
-    image_path: "assets/icons/icon.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "assets/icons/icon.png"
+flutter_native_splash:
+  color: "#FFC107"
+  color_dark: "#000000"
 
+  image: assets/splash/logo.png
+  image_dark: assets/splash/logo-lite.png
+
+  icon_background_color: "#FFC107"
+  icon_background_color_dark: "#000000"
+
+
+  branding: assets/splash/brand.png
+  branding_dark: assets/splash/brand.png
+  branding_mode: bottom
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

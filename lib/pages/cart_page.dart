@@ -17,9 +17,8 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   void initState() {
-    Provider.of<CartProvider>(context, listen: false)
-      ..resetStream()
-      ..updateCartDetails();
+    Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
+    Provider.of<CartProvider>(context, listen: false).updateCartDetails();
 
     super.initState();
   }

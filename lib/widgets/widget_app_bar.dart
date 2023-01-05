@@ -24,20 +24,28 @@ class WidgetAppBar extends StatelessWidget {
         Stack(
           children: [
             Center(child: IconButton(onPressed: () {}, splashRadius: 24, padding: EdgeInsets.zero, icon: const Icon(Icons.shopping_cart))),
-            Visibility(
-              visible: Provider.of<CartProvider>(context).cartDetails?.items?.isNotEmpty ?? false,
-              child: Container(
-                height: 20,
-                width: 20,
-                decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(9)),
-                child: Center(
-                  child: Text(
-                    Provider.of<CartProvider>(context).cartDetails?.items?.length.toString() ?? "",
-                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+            Selector<CartProvider, int>(
+              selector: (_, cart) => cart.items.length,
+              builder: (_, itemCount, __) {
+                return Visibility(
+                  visible: itemCount > 0,
+                  child: Container(
+                    height: 20,
+                    width: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade800,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Center(
+                      child: Text(
+                        itemCount.toString(),
+                        style: const TextStyle(color: Colors.white, fontSize: 12, height: 1.5, fontWeight: FontWeight.w500),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+                );
+              },
+            )
           ],
         ),
       ],
