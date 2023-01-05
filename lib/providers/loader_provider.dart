@@ -5,16 +5,14 @@ class LoaderProvider with ChangeNotifier {
   bool get isApiCallProcess => _isApiCallProcess;
 
   bool _isLoadingMore = false;
-  bool get isLoadingMore =>_isLoadingMore;
-
-
+  bool get isLoadingMore => _isLoadingMore;
 
   setStatus(bool status) {
     _isApiCallProcess = status;
     notifyListeners();
   }
 
-  seIsLoadingMore(bool status){
+  seIsLoadingMore(bool status) {
     _isLoadingMore = status;
     notifyListeners();
   }

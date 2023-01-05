@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class AddToCartModel {
@@ -23,14 +22,19 @@ class AddToCartModel {
     return AddToCartModel(
       id: map['id'].toString(),
       quantity: map['quantity'].toString(),
-      variation: map['itemData'] as Map<String, String>,
-      itemData: map['item_data'] as Map<String, String>,
+      variation: map['itemData'] as Map<String, String>?,
+      itemData: map['item_data'] as Map<String, String>?,
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory AddToCartModel.fromJson(String source) => AddToCartModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'AddToCartModel(id: $id, quantity: $quantity, variation: $variation, itemData: $itemData)';
+  }
 }
 
 class CartDetailsModel {
@@ -69,6 +73,7 @@ class CartDetailsModel {
 }
 
 class CartItemModel {
+  String key;
   int id;
   String name;
   int quantity;
@@ -77,6 +82,7 @@ class CartItemModel {
   String thumbnail;
 
   CartItemModel({
+    required this.key,
     required this.id,
     required this.name,
     required this.quantity,
@@ -87,6 +93,7 @@ class CartItemModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'item_key': key,
       'id': id,
       'name': name,
       'quantity': quantity,
@@ -98,6 +105,7 @@ class CartItemModel {
 
   factory CartItemModel.fromMap(Map<String, dynamic> map) {
     return CartItemModel(
+      key: map['item_key'] ?? '',
       id: int.tryParse(map['id'].toString()) ?? 0,
       name: map['name'].toString(),
       quantity: int.tryParse(map['quantity']['value'].toString()) ?? 0,

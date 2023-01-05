@@ -1,3 +1,4 @@
+import 'package:aseel/constants/colors.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/utils/progress_hud.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
   @override
   State<CartPage> createState() => _CartPageState();
 }
@@ -42,23 +44,17 @@ class _CartPageState extends State<CartPage> {
         return SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    itemCount: controller.cartDetails?.items?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      if (controller.cartDetails?.items?.isNotEmpty ?? false) {
-                        return CartProduct(cartItem: controller.cartDetails!.items![index]);
-                      }
-
-                      return const Center(child: Text("سلة المشتريات فارغة"));
-                    },
+                    itemCount: controller.items.length,
+                    itemBuilder: (context, index) => WidgetCartProduct(cartItem: controller.items[index]),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
@@ -68,7 +64,14 @@ class _CartPageState extends State<CartPage> {
                         color: Colors.green.shade800,
                         shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        onPressed: () {},
+                        onPressed: () {
+                          Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
+                          var cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+                          cartProvider.updateCartDetails(onCallback: () {
+                            Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
+                          });
+                        },
                         child: Wrap(
                           alignment: WrapAlignment.end,
                           crossAxisAlignment: WrapCrossAlignment.center,
@@ -80,32 +83,41 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    color: Colors.white,
-                    width: MediaQuery.of(context).size.width,
-                    height: 100,
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text("المجموع: ", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                            Text(' ريال'),
-                          ],
-                        )
-                      ],
-                    ),
-                  )
                 ],
-              )
+              ),
+              const CheckoutButton()
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class CheckoutButton extends StatelessWidget {
+  const CheckoutButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width,
+      height: 100,
+      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+      child: MaterialButton(
+        color: AppColors.accentColor,
+        shape: const StadiumBorder(),
+        onPressed: () {},
+        child: Row(
+          children: [
+            const Text(' دفع ', style: TextStyle(color: Colors.white, fontSize: 18)),
+            Consumer<CartProvider>(builder: (_, controller, child) {
+              return Text(' ${controller.totalAmount} ', style: const TextStyle(color: Colors.white, fontSize: 18));
+            }),
+            const Text(' ريال', style: TextStyle(color: Colors.white, fontSize: 18)),
+          ],
+        ),
+      ),
     );
   }
 }

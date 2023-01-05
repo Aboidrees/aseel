@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aseel">
    <application
-        android:label="aseel"
+        android:label="الأصيل"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
