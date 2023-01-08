@@ -1,5 +1,5 @@
-import 'package:aseel/api_service.dart';
 import 'package:aseel/models/cart_model.dart';
+import 'package:aseel/services/api_service.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {

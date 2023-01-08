@@ -1,28 +1,14 @@
-import 'package:aseel/api_service.dart';
 import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/product_model.dart';
-import 'package:aseel/widgets/product_image.dart';
+import 'package:aseel/widgets/image_display.dart';
 import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
 
-class WidgetHomeProducts extends StatefulWidget {
-  final String tagId;
+class WidgetHomeProducts extends StatelessWidget {
+  final List<ProductModel> products;
   final String labelName;
 
-  const WidgetHomeProducts({super.key, required this.labelName, required this.tagId});
-
-  @override
-  State<WidgetHomeProducts> createState() => _WidgetHomeProductsState();
-}
-
-class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
-  late APIService apiService;
-
-  @override
-  void initState() {
-    apiService = APIService();
-    super.initState();
-  }
+  const WidgetHomeProducts({super.key, required this.labelName, required this.products});
 
   @override
   Widget build(BuildContext context) {
@@ -30,33 +16,21 @@ class _WidgetHomeProductsState extends State<WidgetHomeProducts> {
       color: const Color(0x0ff4f7fa),
       child: Column(
         children: [
-          WidgetSectionHead(headLabel: widget.labelName),
-          _buildProductsNavigation(),
+          WidgetSectionHead(headLabel: labelName),
+          ProductListItem(products: products),
         ],
       ),
     );
   }
-
-  Widget _buildProductsNavigation() {
-    return FutureBuilder(
-      future: apiService.getProducts(tagName: widget.tagId),
-      builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasData) {
-          return ProductNavigation(products: snapshot.data!);
-        }
-        return const Center(child: Text("No Data"));
-      },
-    );
-  }
 }
 
-class ProductNavigation extends StatelessWidget {
-  final List<ProductModel> products;
+class ProductListItem extends StatelessWidget {
+  const ProductListItem({
+    Key? key,
+    required this.products,
+  }) : super(key: key);
 
-  const ProductNavigation({super.key, required this.products});
+  final List<ProductModel> products;
 
   @override
   Widget build(BuildContext context) {
@@ -71,33 +45,54 @@ class ProductNavigation extends StatelessWidget {
         itemBuilder: (context, index) {
           var product = products[index];
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                margin: const EdgeInsets.all(10),
-                width: 130,
-                height: 130,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(0, 5), blurRadius: 6)],
-                ),
-                child: ProductImage(height: 120, width: 120, imageURL: product.images?[0].url, borderRadius: BorderRadius.circular(10)),
-              ),
-              Container(
-                width: 130,
-                alignment: Alignment.centerRight,
-                child: Text(product.name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, color: Colors.black)),
-              ),
-
-              //
-              ProductPrice(product: product),
-            ],
-          );
+          return ProductCard(product: product);
         },
+      ),
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
+  const ProductCard({super.key, required this.product, this.width = 130, this.height});
+
+  final ProductModel product;
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10),
+            width: width,
+            height: height,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(1, 2), blurRadius: 5)],
+            ),
+            child: ImageDisplay(
+                imageURL: product.images?[0].url,
+                borderRadius: BorderRadius.circular(
+                  15,
+                )),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              product.name,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 11),
+            ),
+          ),
+          //
+          ProductPrice(product: product),
+        ],
       ),
     );
   }
@@ -113,6 +108,7 @@ class ProductPrice extends StatelessWidget {
     var sale = double.tryParse(product.salePrice.toString()) ?? 0.0;
     var regular = double.tryParse(product.regularPrice.toString()) ?? double.tryParse(product.price.toString()) ?? 0.0;
     bool productHasSale = regular > sale && sale != 0.0;
+    var style = const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
 
     return Visibility(
       visible: sale > 0 || regular > 0,
@@ -121,26 +117,15 @@ class ProductPrice extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         alignment: Alignment.centerRight,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // regular
-            Text(
-              "$regular  ريال",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                decoration: productHasSale ? TextDecoration.lineThrough : null,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text("$regular ريال", style: style.copyWith(decoration: productHasSale ? TextDecoration.lineThrough : null)),
             Visibility(visible: productHasSale, child: const SizedBox(width: 4)),
             // sale
             Visibility(
               visible: productHasSale,
-              child: Text(
-                "${product.salePrice} QA",
-                style: const TextStyle(fontSize: 14, color: AppColors.accentColor, fontWeight: FontWeight.bold),
-              ),
+              child: Text("${product.salePrice} ريال", style: style.copyWith(color: AppColors.accentColor)),
             ),
           ],
         ),

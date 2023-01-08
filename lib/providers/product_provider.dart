@@ -1,5 +1,5 @@
-import 'package:aseel/api_service.dart';
 import 'package:aseel/models/product_model.dart';
+import 'package:aseel/services/wc_products_api.dart';
 import 'package:flutter/material.dart';
 
 class SortBy {
@@ -13,12 +13,13 @@ class SortBy {
 enum LoadMoreStatus { initial, loading, stable }
 
 class ProductProvider with ChangeNotifier {
-  late APIService _apiService;
-  late List<ProductModel> _productsList;
-  late SortBy _sortBy;
   LoadMoreStatus _loadMoreStatus = LoadMoreStatus.stable;
-  int pageSize = 10;
+  late WCProductsService _wcProductsService;
+  late List<ProductModel> _productVariations;
+  late List<ProductModel> _productsList;
   late ProductModel _currentProduct;
+  late SortBy _sortBy;
+  int pageSize = 9;
 
   // getters
   List<ProductModel> get allProducts => _productsList;
@@ -32,13 +33,12 @@ class ProductProvider with ChangeNotifier {
   }
 
   void resetStream() {
-    _apiService = APIService();
+    _wcProductsService = WCProductsService();
     _productsList = <ProductModel>[];
+    _productVariations = <ProductModel>[];
   }
 
-  setLoadingState(LoadMoreStatus loadMoreStatus) {
-    _loadMoreStatus = loadMoreStatus;
-  }
+  setLoadingState(LoadMoreStatus loadMoreStatus) => _loadMoreStatus = loadMoreStatus;
 
   setSortOrder(SortBy sortBy) {
     _sortBy = sortBy;
@@ -47,10 +47,24 @@ class ProductProvider with ChangeNotifier {
 
   ProductModel get currentProduct => _currentProduct;
 
-  setCurrentProduct(ProductModel product) {
+  List<ProductModel> get productVariations => _productVariations;
+
+  setCurrentProduct(ProductModel product, {Function? onCallback}) async {
     _currentProduct = product;
-    notifyListeners();
+    if (product.type == 'variable') {
+      // print(product);
+      await _wcProductsService.getVariableProduct(product.id)?.then((value) {
+        if (value.isNotEmpty) {
+          _productVariations = [];
+          _productVariations.addAll(value);
+          if (onCallback != null) onCallback();
+          notifyListeners();
+        }
+      });
+    }
   }
+
+  loadProductVariations() {}
 
   fetchProducts(
     int pageNumber, {
@@ -61,7 +75,7 @@ class ProductProvider with ChangeNotifier {
     String? sortOrder = 'asc',
     Function? onCallback,
   }) async {
-    List<ProductModel> products = await _apiService.getProducts(
+    List<ProductModel> products = await _wcProductsService.getProducts(
       strSearch: strSearch,
       tagName: tagName,
       pageNumber: pageNumber,

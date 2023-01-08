@@ -1,5 +1,5 @@
-import 'package:aseel/api_service.dart';
 import 'package:aseel/models/product_model.dart';
+import 'package:aseel/services/wc_products_api.dart';
 import 'package:aseel/widgets/widget_home_products.dart';
 import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +15,11 @@ class WidgetRelatedProducts extends StatefulWidget {
 }
 
 class _WidgetRelatedProductsState extends State<WidgetRelatedProducts> {
-  late APIService apiService;
+  late WCProductsService _wcProductsService;
 
   @override
   void initState() {
-    apiService = APIService();
+    _wcProductsService = WCProductsService();
     super.initState();
   }
 
@@ -31,13 +31,13 @@ class _WidgetRelatedProductsState extends State<WidgetRelatedProducts> {
         children: [
           WidgetSectionHead(headLabel: widget.labelName),
           FutureBuilder(
-            future: apiService.getProducts(productsIds: widget.productsIds),
+            future: _wcProductsService.getProducts(productsIds: widget.productsIds),
             builder: (context, AsyncSnapshot<List<ProductModel>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasData) {
-                return ProductNavigation(products: snapshot.data!);
+                return ProductListItem(products: snapshot.data!);
               }
               return const Center(child: Text("No Data"));
             },

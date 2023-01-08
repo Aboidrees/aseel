@@ -4,7 +4,7 @@ import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
-import 'package:aseel/widgets/widget_product_card.dart';
+import 'package:aseel/widgets/widget_home_products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,13 +31,14 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
 
   @override
   void initState() {
-    Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
-
     var productController = Provider.of<ProductProvider>(context, listen: false);
     productController
       ..resetStream()
       ..setLoadingState(LoadMoreStatus.initial)
-      ..fetchProducts(_page);
+      ..fetchProducts(
+        _page,
+        onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
+      );
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
@@ -93,11 +94,17 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
           child: GridView.count(
             shrinkWrap: false,
             controller: _scrollController,
-            crossAxisCount: 2,
+            crossAxisCount: 3,
             physics: const ClampingScrollPhysics(),
-            childAspectRatio: 0.67,
+            childAspectRatio: 0.73,
             scrollDirection: Axis.vertical,
-            children: products.map((product) => ProductCard(product: product)).toList(),
+            children: products
+                .map((product) => Container(
+                      color: Colors.red,
+                      margin: const EdgeInsets.all(2),
+                      child: ProductCard(product: product),
+                    ))
+                .toList(),
           ),
         ),
         Visibility(

@@ -17,29 +17,28 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   void initState() {
-    Provider.of<LoaderProvider>(context, listen: false).setStatus(false);
-    Provider.of<CartProvider>(context, listen: false).updateCartDetails();
+    Future.delayed(Duration.zero, () => Provider.of<LoaderProvider>(context, listen: false).setStatus(true));
+
+    Provider.of<CartProvider>(context, listen: false).updateCartDetails(
+      onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
+    );
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoaderProvider>(
-      builder: (context, controller, child) {
-        return Scaffold(
-          body: ProgressHUD(
-            inAsyncCall: controller.isApiCallProcess,
-            opacity: 0.3,
-            child: Column(
-              children: const [
-                CartItemsList(),
-                CheckoutButton(),
-              ],
-            ),
-          ),
-        );
-      },
+    return Scaffold(
+      body: ProgressHUD(
+        inAsyncCall: context.watch<LoaderProvider>().isApiCallProcess,
+        opacity: 0.3,
+        child: Column(
+          children: const [
+            CartItemsList(),
+            CheckoutButton(),
+          ],
+        ),
+      ),
     );
   }
 }

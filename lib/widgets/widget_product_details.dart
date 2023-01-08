@@ -4,9 +4,10 @@ import 'package:aseel/models/image_model.dart';
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
+import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/utils/custom_stepper.dart';
 import 'package:aseel/utils/expand_text.dart';
-import 'package:aseel/widgets/product_image.dart';
+import 'package:aseel/widgets/image_display.dart';
 import 'package:aseel/widgets/widget_related_products.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -56,22 +57,45 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  widget.product.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.bold),
+                // name and price
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.product.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "${widget.product.salePrice} ريال ",
+                      style: const TextStyle(fontSize: 16, color: AppColors.accentColor, fontWeight: FontWeight.bold),
+                    )
+                  ],
                 ),
+                // variations
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      children: [for (var attribute in widget.product.attributes ?? []) Text("${attribute.name}:  ${attribute.options?.join(" - ")} ")],
+                    Visibility(
+                      visible: widget.product.type != "variable",
+                      child: Column(
+                        children: [for (var attribute in widget.product.attributes ?? []) Text("${attribute.name}:  ${attribute.options?.join(" - ")} ")],
+                      ),
                     ),
-                    Text(
-                      "${widget.product.salePrice} ريال ",
-                      style: const TextStyle(fontSize: 25, color: Colors.black, fontWeight: FontWeight.bold),
-                    )
+                    Visibility(
+                      visible: widget.product.type == "variable",
+                      child: selectDropDown(
+                        context,
+                        initialValue: "",
+                        items: context.read<ProductProvider>().productVariations,
+                        onChanged: (ProductModel product) {
+                          widget.product.price = product.price;
+                          widget.product.salePrice = product.salePrice;
+                          widget.product.regularPrice = product.regularPrice;
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -92,12 +116,14 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       shape: const StadiumBorder(),
                       onPressed: () {
-                        Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
+                        context.read<LoaderProvider>().setStatus(true);
 
-                        var cartProvider = Provider.of<CartProvider>(context, listen: false);
-
-                        cartProvider.addToCart(AddToCartModel(id: widget.product.id.toString(), quantity: _qty.toString()),
-                            onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false));
+                        context
+                            .read<CartProvider>() //
+                            .addToCart(
+                              AddToCartModel(id: widget.product.id.toString(), quantity: _qty.toString(), variation: {}),
+                              onCallback: () => context.read<LoaderProvider>().setStatus(false),
+                            );
                       },
                       child: const Text("إضافة للسلة", style: TextStyle(color: Colors.white)),
                     )
@@ -132,21 +158,79 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
             alignment: Alignment.center,
             child: CarouselSlider.builder(
               itemCount: images.length,
-              itemBuilder: (context, index, realIndex) => ProductImage(imageURL: images[index].url, fit: BoxFit.fill),
+              itemBuilder: (context, index, realIndex) => ImageDisplay(imageURL: images[index].url),
               options: CarouselOptions(autoPlay: false, enlargeCenterPage: true, viewportFraction: 1, aspectRatio: 1),
               carouselController: _carousel,
             ),
           ),
           Visibility(
             visible: images.length > 1,
-            child: Positioned(top: 100, right: 10, child: IconButton(icon: const Icon(Icons.arrow_back_ios), onPressed: _carousel.previousPage)),
+            child: Positioned(
+              top: 100,
+              right: 10,
+              child: IconButton(icon: const Icon(Icons.arrow_back_ios), onPressed: _carousel.previousPage),
+            ),
           ),
           Visibility(
             visible: images.length > 1,
-            child: Positioned(top: 100, left: 10, child: IconButton(icon: const Icon(Icons.arrow_forward_ios), onPressed: _carousel.nextPage)),
+            child: Positioned(
+              top: 100,
+              left: 10,
+              child: IconButton(icon: const Icon(Icons.arrow_forward_ios), onPressed: _carousel.nextPage),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  static Widget selectDropDown(
+    BuildContext context, {
+    dynamic items,
+    Object? initialValue,
+    Function? onChanged,
+    String Function(ProductModel?)? onValidate,
+  }) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        height: 75,
+        width: 150,
+        padding: const EdgeInsets.only(top: 5),
+        child: DropdownButtonFormField<ProductModel>(
+          hint: const Text(' اختر'),
+          value: null,
+          isDense: true,
+          decoration: fieldDecoration(context, '', ''),
+          onChanged: (ProductModel? product) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            onChanged!(product);
+          },
+          validator: onValidate,
+          items: items?.map<DropdownMenuItem<ProductModel>>((ProductModel product) {
+                return DropdownMenuItem(value: product, child: Text("${product.attributes?.first.option}  ${product.attributes?.first.name}"));
+              }).toList() ??
+              [],
+        ),
+      ),
+    );
+  }
+
+  static InputDecoration fieldDecoration(
+    BuildContext context,
+    String hintText,
+    String helperText, {
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(6),
+      hintText: hintText,
+      helperText: helperText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor, width: 1)),
+      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor, width: 1)),
     );
   }
 }

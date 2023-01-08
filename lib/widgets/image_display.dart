@@ -1,14 +1,14 @@
 import 'package:aseel/r.dart';
 import 'package:flutter/material.dart';
 
-class ProductImage extends StatelessWidget {
+class ImageDisplay extends StatelessWidget {
   final double? height;
   final double? width;
   final String? imageURL;
   final BorderRadius? borderRadius;
   final BoxFit? fit;
 
-  const ProductImage({
+  const ImageDisplay({
     super.key,
     this.imageURL,
     this.width,

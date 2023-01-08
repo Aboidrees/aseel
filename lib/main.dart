@@ -1,9 +1,11 @@
 import 'package:aseel/pages/base.dart';
 import 'package:aseel/pages/cart_page.dart';
+import 'package:aseel/pages/dashboard_page.dart';
 import 'package:aseel/pages/home_page.dart';
 import 'package:aseel/pages/product_details_page.dart';
 import 'package:aseel/pages/products_menu_page.dart';
 import 'package:aseel/providers/cart_provider.dart';
+import 'package:aseel/providers/home_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => HomeProvider(), child: const DashboardPage()),
         ChangeNotifierProvider(create: (context) => ProductProvider(), child: const ProductsMenuPage()),
         ChangeNotifierProvider(create: (context) => CartProvider(), child: const ProductDetailsPage()),
         ChangeNotifierProvider(create: (context) => CartProvider(), child: const CartPage()),

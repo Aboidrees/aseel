@@ -1,94 +1,76 @@
-import 'package:aseel/api_service.dart';
-import 'package:aseel/models/category.dart' as category_model;
+import 'package:aseel/models/category.dart';
 import 'package:aseel/pages/products_menu_page.dart';
+import 'package:aseel/providers/home_provider.dart';
+import 'package:aseel/widgets/image_display.dart';
 import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class WidgetHomeCategories extends StatefulWidget {
+class WidgetHomeCategories extends StatelessWidget {
   const WidgetHomeCategories({super.key});
-
-  @override
-  State<WidgetHomeCategories> createState() => _WidgetHomeCategoriesState();
-}
-
-class _WidgetHomeCategoriesState extends State<WidgetHomeCategories> {
-  late APIService apiService;
-
-  @override
-  void initState() {
-    apiService = APIService();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: Column(
-        children: [
-          const WidgetSectionHead(headLabel: "كل التصنيفات"),
-          FutureBuilder(
-            future: apiService.getCategories(),
-            builder: (context, AsyncSnapshot<List<category_model.Category>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-              if (snapshot.hasData) return CategoryNavigation(categories: snapshot.data!);
-              return const Center(child: Text("No Data"));
-            },
-          ),
-        ],
+      child: Consumer<HomeProvider>(
+        builder: (_, controller, __) {
+          return Column(
+            children: [
+              const WidgetSectionHead(headLabel: "كل التصنيفات"),
+              Container(
+                height: 150,
+                alignment: Alignment.centerRight,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  reverse: true,
+                  physics: const ClampingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.categories.length,
+                  itemBuilder: (context, index) => CategoryListItem(category: controller.categories[index]),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-class CategoryNavigation extends StatelessWidget {
-  final List<category_model.Category> categories;
-
-  const CategoryNavigation({super.key, required this.categories});
+class CategoryListItem extends StatelessWidget {
+  final CategoryModel category;
+  const CategoryListItem({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 150,
-      alignment: Alignment.centerRight,
-      child: ListView.builder(
-        shrinkWrap: true,
-        reverse: true,
-        physics: const ClampingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          var category = categories[index];
-
-          return GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductsMenuPage(categoryId: category.id))),
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  width: 80,
-                  height: 80,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(0, 5), blurRadius: 5)],
-                  ),
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundImage: (category.image != null && category.image?.url != null) ? NetworkImage(category.image?.url ?? "") : null,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(category.name.toString()),
-                    const Icon(Icons.keyboard_arrow_left, size: 14),
-                  ],
-                )
-              ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductsMenuPage(categoryId: category.id),
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(12),
+            width: 80,
+            height: 80,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(1, 2), blurRadius: 5)],
             ),
-          );
-        },
+
+            //! Add WIDTH & HIEGHT less than 80 to ImageDisplay to create border for the image
+            child: ImageDisplay(imageURL: category.image?.url, borderRadius: BorderRadius.circular(40)),
+          ),
+          Text(category.name.toString()),
+        ],
       ),
     );
   }

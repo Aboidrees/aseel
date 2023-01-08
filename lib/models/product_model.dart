@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:aseel/models/attribute_model.dart';
 import 'package:aseel/models/category.dart';
 import 'package:aseel/models/image_model.dart';
 
@@ -16,9 +17,10 @@ class ProductModel {
   String? stockStatus;
 
   List<ImageModel>? images;
-  List<Category>? categories;
-  List<Attribute>? attributes;
+  List<CategoryModel>? categories;
+  List<AttributeModel>? attributes;
   List<int>? relatedIds;
+  String? type;
 
   ProductModel({
     required this.id,
@@ -34,6 +36,7 @@ class ProductModel {
     this.categories,
     this.attributes,
     this.relatedIds,
+    this.type,
   });
 
   Map<String, dynamic> toMap() {
@@ -51,24 +54,26 @@ class ProductModel {
       'categories': categories?.map((x) => x.toMap()).toList(),
       'attributes': attributes?.map((x) => x.toMap()).toList(),
       'relatedIds': relatedIds?.toList(),
+      'type': type?.toString(),
     };
   }
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'] as int,
-      name: map['name'] as String,
-      description: map['description'] != null ? map['description'] as String : null,
-      shortDescription: map['short_description'] != null ? map['short_description'] as String : null,
-      sku: map['sku'] != null ? map['sku'] as String : null,
-      price: map['price'] != null ? map['price'] as String : null,
-      regularPrice: map['regular_price'] != null ? map['regular_price'] as String : null,
-      salePrice: map['sale_price'] != null ? map['sale_price'] as String : map['regular_price'] ?? "",
-      stockStatus: map['stock_status'] != null ? map['stock_status'] as String : null,
-      images: map['images'] != null ? List<ImageModel>.from((map['images']).map((x) => ImageModel.fromMap(x as Map<String, dynamic>))) : null,
-      categories: map['categories'] != null ? List<Category>.from((map['categories']).map((x) => Category.fromMap(x as Map<String, dynamic>))) : null,
-      attributes: map['attributes'] != null ? List<Attribute>.from((map['attributes']).map((x) => Attribute.fromMap(x as Map<String, dynamic>))) : null,
-      relatedIds: map['cross_sell_ids'].cast<int>() ?? <int>[],
+      sku: map['sku']?.toString() ?? "",
+      name: map['name']?.toString() ?? map['title']?.toString() ?? "",
+      price: map['price']?.toString() ?? "",
+      description: map['description']?.toString() ?? "",
+      shortDescription: map['short_description']?.toString() ?? "",
+      regularPrice: map['regular_price']?.toString() ?? "",
+      salePrice: map['sale_price']?.toString() ?? map['regular_price']?.toString() ?? map['price']?.toString() ?? "",
+      stockStatus: map['stock_status']?.toString(),
+      images: List.from((map['images'])?.map((x) => ImageModel.fromMap(x as Map<String, dynamic>)) ?? []),
+      categories: List.from((map['categories'])?.map((x) => CategoryModel.fromMap(x as Map<String, dynamic>)) ?? []),
+      attributes: List.from((map['attributes'])?.map((x) => AttributeModel.fromMap(x as Map<String, dynamic>))),
+      relatedIds: map['cross_sell_ids']?.cast<int>() ?? <int>[],
+      type: map['type']?.toString(),
     );
   }
 
@@ -78,7 +83,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, description: $description, shortDescription: $shortDescription, sku: $sku, price: $price, regularPrice: $regularPrice, salePrice: $salePrice, stockStatus: $stockStatus, images: $images, categories: $categories)';
+    return 'Product(id: $id, name: $name, description: $description, shortDescription: $shortDescription, sku: $sku, price: $price, regularPrice: $regularPrice, salePrice: $salePrice, stockStatus: $stockStatus, images: $images, categories: $categories, type: $type)';
   }
 
   int calculateDiscount() {
@@ -90,28 +95,4 @@ class ProductModel {
     double discountPercent = (discount / regularPrice) * 100;
     return discountPercent.round();
   }
-}
-
-class Attribute {
-  int id;
-  String? name;
-  bool? visible;
-  List<String>? options;
-
-  Attribute({required this.id, this.name, this.visible, this.options});
-
-  Map<String, dynamic> toMap() => <String, dynamic>{'id': id, 'name': name, 'visible': visible, 'options': options};
-
-  factory Attribute.fromMap(Map<String, dynamic> map) {
-    return Attribute(
-      id: map['id'] as int,
-      name: map['name'].toString(),
-      visible: map['visible'] ?? false,
-      options: List<String>.from((map['options'] as List)),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Attribute.fromJson(String source) => Attribute.fromMap(json.decode(source) as Map<String, dynamic>);
 }

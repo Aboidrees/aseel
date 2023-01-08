@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:aseel/api_service.dart';
 import 'package:aseel/constants/colors.dart';
 import 'package:aseel/models/customer_model.dart';
+import 'package:aseel/services/api_service.dart';
 import 'package:aseel/utils/form_helper.dart';
 import 'package:aseel/utils/progress_hud.dart';
 import 'package:aseel/utils/validator_service.dart';
@@ -117,7 +117,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor.withOpacity(0.2))),
                               focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor)),
                               suffixIcon: IconButton(
-                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility, color: AppColors.accentColor.withOpacity(0.2)),
+                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility,
+                                    color: AppColors.accentColor.withOpacity(0.2)),
                                 onPressed: () => setState(() => hidePassword = !hidePassword),
                               )),
                         ),

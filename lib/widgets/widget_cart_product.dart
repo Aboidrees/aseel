@@ -4,7 +4,7 @@ import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/utils/custom_stepper.dart';
 import 'package:aseel/utils/util.dart';
-import 'package:aseel/widgets/product_image.dart';
+import 'package:aseel/widgets/image_display.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +36,7 @@ class _WidgetCartProductState extends State<WidgetCartProduct> {
       leading: SizedBox(
         width: 50,
         height: 50,
-        child: ProductImage(width: 70, height: 70, imageURL: cartItem!.thumbnail),
+        child: ImageDisplay(width: 70, height: 70, imageURL: cartItem!.thumbnail),
       ),
       title: Padding(padding: const EdgeInsets.all(5), child: Text(cartItem.name)),
       subtitle: Padding(
@@ -98,6 +98,7 @@ class ItemQuantityController extends StatelessWidget {
             onOk: () {
               loading.setStatus(true);
               cart.removeFromCart(cartItem.id, onCallback: () => loading.setStatus(false));
+              Navigator.pop(context);
             },
             onCancel: () => Navigator.pop(context),
             cancelTextStyle: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.bold),

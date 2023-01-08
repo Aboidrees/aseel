@@ -7,7 +7,7 @@ class ImageModel {
 
   Map<String, dynamic> toMap() => <String, dynamic>{'url': url};
 
-  factory ImageModel.fromMap(Map<String, dynamic> map) => ImageModel(url: map['src'] != null ? map['src'] as String : null);
+  factory ImageModel.fromMap(Map<String, dynamic> map) => ImageModel(url: map['src']?.toString() ?? "");
 
   String toJson() => json.encode(toMap());
 

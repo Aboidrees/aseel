@@ -1,17 +1,13 @@
-import 'package:aseel/config.dart';
+import 'package:aseel/providers/home_provider.dart';
 import 'package:aseel/widgets/widget_home_category.dart';
 import 'package:aseel/widgets/widget_home_products.dart';
 import 'package:flutter/material.dart';
 import 'package:lecle_flutter_carousel_pro/lecle_flutter_carousel_pro.dart';
+import 'package:provider/provider.dart';
 
-class DashboardPage extends StatefulWidget {
+class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +17,9 @@ class _DashboardPageState extends State<DashboardPage> {
           children: [
             imageCarousal(context),
             const WidgetHomeCategories(),
-            const WidgetHomeProducts(labelName: "العروض", tagId: Config.offersTag),
-            const WidgetHomeProducts(labelName: "أحدث المنتجات", tagId: Config.newArrivalTag),
-            const WidgetHomeProducts(labelName: "الأكثر مبيعاً", tagId: Config.topSellTag),
+            WidgetHomeProducts(labelName: "العروض", products: Provider.of<HomeProvider>(context).offers),
+            WidgetHomeProducts(labelName: "أحدث المنتجات", products: Provider.of<HomeProvider>(context).newArrival),
+            WidgetHomeProducts(labelName: "الأكثر مبيعاً", products: Provider.of<HomeProvider>(context).topSelling),
           ],
         ),
       ),

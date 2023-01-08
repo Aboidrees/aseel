@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:aseel/models/image_model.dart';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-class Category {
+class CategoryModel {
   int id;
   String? name;
   String? description;
   int? parent;
   ImageModel? image;
 
-  Category({
+  CategoryModel({
     required this.id,
     this.name,
     this.description,
@@ -28,8 +27,8 @@ class Category {
     };
   }
 
-  factory Category.fromMap(Map<String, dynamic> map) {
-    return Category(
+  factory CategoryModel.fromMap(Map<String, dynamic> map) {
+    return CategoryModel(
       id: map['id'] as int,
       name: map['name'] != null ? map['name'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
@@ -40,7 +39,7 @@ class Category {
 
   String toJson() => json.encode(toMap());
 
-  factory Category.fromJson(String source) => Category.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CategoryModel.fromJson(String source) => CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -48,7 +47,7 @@ class Category {
   }
 
   @override
-  bool operator ==(covariant Category other) {
+  bool operator ==(covariant CategoryModel other) {
     if (identical(this, other)) return true;
 
     return other.id == id && other.name == name && other.description == description && other.parent == parent && other.image == image;

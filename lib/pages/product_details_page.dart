@@ -13,5 +13,18 @@ class ProductDetailsPage extends BasePage {
 
 class _ProductDetailsPageState extends BasePageState<ProductDetailsPage> {
   @override
-  Widget pageUI() => WidgetProductDetails(product: Provider.of<ProductProvider>(context, listen: false).currentProduct);
+  Widget pageUI() {
+    var productsProvider = context.watch<ProductProvider>();
+
+    return WidgetProductDetails(product: productsProvider.currentProduct);
+  }
+}
+
+class WidgetVariableProduct extends StatelessWidget {
+  const WidgetVariableProduct({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
 }
