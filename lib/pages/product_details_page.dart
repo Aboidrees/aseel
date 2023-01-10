@@ -1,8 +1,6 @@
 import 'package:aseel/pages/base.dart';
-import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/widgets/widget_product_details.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends BasePage {
   const ProductDetailsPage({super.key});
@@ -13,11 +11,7 @@ class ProductDetailsPage extends BasePage {
 
 class _ProductDetailsPageState extends BasePageState<ProductDetailsPage> {
   @override
-  Widget pageUI() {
-    var productsProvider = context.watch<ProductProvider>();
-
-    return WidgetProductDetails(product: productsProvider.currentProduct);
-  }
+  Widget pageUI() => const WidgetProductDetails();
 }
 
 class WidgetVariableProduct extends StatelessWidget {

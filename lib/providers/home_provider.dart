@@ -47,7 +47,7 @@ class HomeProvider with ChangeNotifier {
     getCategories();
     getOffers();
     getNewArrival();
-    getTopSalling();
+    getTopSelling();
   }
 
   Future getCategories() async {
@@ -77,7 +77,7 @@ class HomeProvider with ChangeNotifier {
     });
   }
 
-  Future getTopSalling() async {
+  Future getTopSelling() async {
     _wcProductsService.getProducts(tagName: Config.topSellTag).then((value) {
       if (value.isNotEmpty) {
         _topSelling.addAll(value);

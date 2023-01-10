@@ -4,7 +4,9 @@ import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
-import 'package:aseel/widgets/widget_home_products.dart';
+import 'package:aseel/utils/enums.dart';
+import 'package:aseel/utils/util.dart';
+import 'package:aseel/widgets/widget_product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,9 +34,10 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
   @override
   void initState() {
     var productController = Provider.of<ProductProvider>(context, listen: false);
+
     productController
       ..resetStream()
-      ..setLoadingState(LoadMoreStatus.initial)
+      ..setLoadingMoreStatus(LoadingStatus.initial)
       ..fetchProducts(
         _page,
         onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
@@ -43,7 +46,7 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
         productController
-          ..setLoadingState(LoadMoreStatus.loading)
+          ..setLoadingMoreStatus(LoadingStatus.loading)
           ..fetchProducts(++_page);
       }
     });
@@ -53,7 +56,7 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
       _debounce = Timer(const Duration(milliseconds: 500), () {
         productController
           ..resetStream()
-          ..setLoadingState(LoadMoreStatus.initial)
+          ..setLoadingMoreStatus(LoadingStatus.initial)
           ..fetchProducts(_page, strSearch: _searchQuery.text);
       });
     });
@@ -63,27 +66,24 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
   @override
   Widget pageUI() {
     return Column(
-      mainAxisSize: MainAxisSize.max,
       children: [
         _productsFilter(),
-        Flexible(child: _productsList()),
+        Flexible(child: Consumer<ProductProvider>(
+          builder: (context, controller, child) {
+            var noProductsCondition = controller.totalRecords == 0 && Utils.isStable(controller.loadingMoreStatus);
+            var hasProductsCondition = controller.allProducts.isNotEmpty && !Utils.isInitial(controller.loadingMoreStatus);
+            var isLoadingMoreCondition = Utils.isLoading(controller.loadingMoreStatus);
+
+            if (noProductsCondition) return const Center(child: Text('No Products'));
+
+            if (hasProductsCondition) {
+              return _buildProductsList(controller.allProducts, isLoadingMoreCondition);
+            }
+
+            return const Center(child: CircularProgressIndicator());
+          },
+        )),
       ],
-    );
-  }
-
-  Widget _productsList() {
-    return Consumer<ProductProvider>(
-      builder: (context, controller, child) {
-        if (controller.totalRecords == 0 && controller.loadingStatus == LoadMoreStatus.stable) {
-          return const Center(child: Text('No Products'));
-        }
-
-        if (controller.allProducts.isNotEmpty && controller.loadingStatus != LoadMoreStatus.initial) {
-          return _buildProductsList(controller.allProducts, controller.loadingStatus == LoadMoreStatus.loading);
-        }
-
-        return const Center(child: CircularProgressIndicator());
-      },
     );
   }
 
@@ -93,18 +93,12 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
         Flexible(
           child: GridView.count(
             shrinkWrap: false,
-            controller: _scrollController,
             crossAxisCount: 3,
+            childAspectRatio: 0.76,
+            controller: _scrollController,
             physics: const ClampingScrollPhysics(),
-            childAspectRatio: 0.73,
             scrollDirection: Axis.vertical,
-            children: products
-                .map((product) => Container(
-                      color: Colors.red,
-                      margin: const EdgeInsets.all(2),
-                      child: ProductCard(product: product),
-                    ))
-                .toList(),
+            children: products.map((product) => ProductCard(product: product)).toList(),
           ),
         ),
         Visibility(

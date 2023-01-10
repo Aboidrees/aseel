@@ -16,6 +16,8 @@ class ProductModel {
   String? salePrice;
   String? stockStatus;
 
+  ImageModel? image;
+
   List<ImageModel>? images;
   List<CategoryModel>? categories;
   List<AttributeModel>? attributes;
@@ -32,6 +34,7 @@ class ProductModel {
     this.regularPrice,
     this.salePrice,
     this.stockStatus,
+    this.image,
     this.images,
     this.categories,
     this.attributes,
@@ -50,6 +53,7 @@ class ProductModel {
       'regularPrice': regularPrice,
       'salePrice': salePrice,
       'stockStatus': stockStatus,
+      'image': image,
       'images': images?.map((x) => x.toMap()).toList(),
       'categories': categories?.map((x) => x.toMap()).toList(),
       'attributes': attributes?.map((x) => x.toMap()).toList(),
@@ -69,6 +73,7 @@ class ProductModel {
       regularPrice: map['regular_price']?.toString() ?? "",
       salePrice: map['sale_price']?.toString() ?? map['regular_price']?.toString() ?? map['price']?.toString() ?? "",
       stockStatus: map['stock_status']?.toString(),
+      image: map['image'] != null ? ImageModel.fromMap(map['image']) : null,
       images: List.from((map['images'])?.map((x) => ImageModel.fromMap(x as Map<String, dynamic>)) ?? []),
       categories: List.from((map['categories'])?.map((x) => CategoryModel.fromMap(x as Map<String, dynamic>)) ?? []),
       attributes: List.from((map['attributes'])?.map((x) => AttributeModel.fromMap(x as Map<String, dynamic>))),
@@ -83,7 +88,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, description: $description, shortDescription: $shortDescription, sku: $sku, price: $price, regularPrice: $regularPrice, salePrice: $salePrice, stockStatus: $stockStatus, images: $images, categories: $categories, type: $type)';
+    return 'Product(id: $id, name: $name, description: $description, shortDescription: $shortDescription, sku: $sku, price: $price, regularPrice: $regularPrice, salePrice: $salePrice, stockStatus: $stockStatus, images: $image,image: $images, categories: $categories, type: $type)';
   }
 
   int calculateDiscount() {
@@ -94,5 +99,41 @@ class ProductModel {
 
     double discountPercent = (discount / regularPrice) * 100;
     return discountPercent.round();
+  }
+
+  ProductModel copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? shortDescription,
+    String? sku,
+    String? price,
+    String? regularPrice,
+    String? salePrice,
+    String? stockStatus,
+    List<ImageModel>? images,
+    ImageModel? image,
+    List<CategoryModel>? categories,
+    List<AttributeModel>? attributes,
+    List<int>? relatedIds,
+    String? type,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      shortDescription: shortDescription ?? this.shortDescription,
+      sku: sku ?? this.sku,
+      price: price ?? this.price,
+      regularPrice: regularPrice ?? this.regularPrice,
+      salePrice: salePrice ?? this.salePrice,
+      stockStatus: stockStatus ?? this.stockStatus,
+      images: images ?? this.images,
+      image: image ?? this.image,
+      categories: categories ?? this.categories,
+      attributes: attributes ?? this.attributes,
+      relatedIds: relatedIds ?? this.relatedIds,
+      type: type ?? this.type,
+    );
   }
 }

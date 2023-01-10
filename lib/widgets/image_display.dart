@@ -7,6 +7,7 @@ class ImageDisplay extends StatelessWidget {
   final String? imageURL;
   final BorderRadius? borderRadius;
   final BoxFit? fit;
+  final bool isPlaceholder;
 
   const ImageDisplay({
     super.key,
@@ -15,6 +16,7 @@ class ImageDisplay extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.fit = BoxFit.cover,
+    this.isPlaceholder = false,
   });
 
   @override
@@ -25,7 +27,7 @@ class ImageDisplay extends StatelessWidget {
         fit: fit,
         height: height,
         width: width ?? double.infinity,
-        image: NetworkImage(imageURL ?? ""),
+        image: NetworkImage(isPlaceholder ? AssetImages.imagePlaceholder : (imageURL ?? "")),
         placeholder: const AssetImage(AssetImages.imagePlaceholder),
         imageErrorBuilder: (_, __, ___) => Image.asset(AssetImages.imagePlaceholder, width: width, height: height),
         placeholderErrorBuilder: (_, __, ___) => const Center(child: CircularProgressIndicator()),

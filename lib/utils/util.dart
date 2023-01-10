@@ -1,3 +1,4 @@
+import 'package:aseel/utils/enums.dart';
 import 'package:flutter/material.dart';
 
 class Utils {
@@ -36,4 +37,10 @@ class Utils {
       },
     );
   }
+
+  static bool isInitial(LoadingStatus loadingStatus) => loadingStatus == LoadingStatus.initial;
+
+  static bool isLoading(LoadingStatus loadingStatus) => loadingStatus == LoadingStatus.loading;
+
+  static bool isStable(LoadingStatus loadingStatus) => loadingStatus == LoadingStatus.stable;
 }

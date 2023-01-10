@@ -7,6 +7,121 @@
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 
+import 'package:aseel/constants/colors.dart';
+import 'package:aseel/models/product_model.dart';
+import 'package:aseel/providers/product_provider.dart';
+import 'package:aseel/utils/enums.dart';
+import 'package:aseel/widgets/image_display.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../pages/product_details_page.dart';
+
+class ProductCard extends StatelessWidget {
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.backgroundColor = Colors.white,
+    this.width = 130,
+    this.height = 115,
+    this.cornerRadius = 0,
+    this.imageMargin = 0,
+    this.margin = 2,
+    this.boxShadow,
+  });
+
+  final ProductModel product;
+  final double? width;
+  final double? height;
+  final Color? backgroundColor;
+  final double? cornerRadius;
+  final double? imageMargin;
+  final double? margin;
+
+  final List<BoxShadow>? boxShadow;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        context.read<ProductProvider>()
+          ..setCurrentProduct(product)
+          ..setLoadingVariationsStatus(LoadingStatus.initial)
+          ..getProductVariations();
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductDetailsPage()));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(cornerRadius!),
+          boxShadow: boxShadow,
+        ),
+        margin: EdgeInsets.all(margin!),
+        width: width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: width,
+              height: height,
+              margin: EdgeInsets.all(imageMargin!),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(cornerRadius!),
+                boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(1, 2), blurRadius: 5)],
+              ),
+              child: ImageDisplay(imageURL: product.images?[0].url, borderRadius: BorderRadius.circular(cornerRadius!)),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(product.name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11)),
+            ),
+
+            //
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ProductPrice(product: product),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProductPrice extends StatelessWidget {
+  const ProductPrice({super.key, required this.product});
+
+  final ProductModel product;
+
+  @override
+  Widget build(BuildContext context) {
+    var sale = double.tryParse(product.salePrice.toString()) ?? 0.0;
+    var regular = double.tryParse(product.regularPrice.toString()) ?? double.tryParse(product.price.toString()) ?? 0.0;
+    bool productHasSale = regular > sale && sale != 0.0;
+    var style = const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
+
+    return Visibility(
+      visible: sale > 0 || regular > 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // regular
+          Text("$regular ريال", style: style.copyWith(decoration: productHasSale ? TextDecoration.lineThrough : null)),
+          Visibility(visible: productHasSale, child: const SizedBox(width: 4)),
+          // sale
+          Visibility(
+            visible: productHasSale,
+            child: Text("${product.salePrice} ريال", style: style.copyWith(color: AppColors.accentColor)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // class ProductCard extends StatelessWidget {
 //   final ProductModel product;
 

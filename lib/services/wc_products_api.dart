@@ -30,7 +30,7 @@ class WCProductsService extends APIService {
       if (productsIds != null) parameter += '&include=${productsIds.join(',')}';
 
       var response = await Dio().get(
-        "${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}$parameter",
+        "${EndPoints.products}?consumer_key=${Config.key}&consumer_secret=${Config.secret}$parameter&status=publish",
         options: requestOptions(),
       );
 

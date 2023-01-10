@@ -6,12 +6,11 @@ import 'package:aseel/config.dart';
 import 'package:aseel/models/cart_model.dart';
 import 'package:aseel/models/customer_model.dart';
 import 'package:aseel/models/login_response_model.dart';
-import 'package:aseel/token.dart';
 import 'package:dio/dio.dart';
 
 class APIService {
   String basicAuth = "Basic ${base64.encode(utf8.encode("${Config.key}:${Config.secret}"))}";
-  String bearerAuth = "Bearer $token";
+  String bearerAuth = "Bearer ${Config.token}";
 
   Options requestOptions({String? authHeader}) {
     Map<String, dynamic> headers = {};
@@ -64,7 +63,7 @@ class APIService {
 
   Future<CartDetailsModel?> getCartDetails() async {
     try {
-      var response = await Dio().get(EndPoints.getCart, options: requestOptions(authHeader: "Bearer $token"));
+      var response = await Dio().get(EndPoints.getCart, options: requestOptions(authHeader: bearerAuth));
 
       if (response.statusCode == 200) {
         return CartDetailsModel.fromMap(response.data);
@@ -83,7 +82,7 @@ class APIService {
       var response = await Dio().post(
         EndPoints.addToCart,
         data: addToCartParams.toJson(),
-        options: requestOptions(authHeader: "Bearer $token"),
+        options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return CartDetailsModel.fromMap(response.data);
     } on DioError catch (e) {
@@ -97,7 +96,7 @@ class APIService {
       var response = await Dio().post(
         EndPoints.cartItem(itemKey),
         data: FormData.fromMap({"quantity": quantity}),
-        options: requestOptions(authHeader: "Bearer $token"),
+        options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return CartDetailsModel.fromMap(response.data);
     } on DioError catch (e) {
@@ -110,7 +109,7 @@ class APIService {
     try {
       var response = await Dio().delete(
         EndPoints.cartItem(itemKey),
-        options: requestOptions(authHeader: "Bearer $token"),
+        options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return true;
     } on DioError catch (e) {

@@ -2,6 +2,8 @@ class Config {
   static const String key = 'ck_d8d861d047f9b1e18b59a9fd885f2df06a023a91';
   static const String secret = 'cs_1ccf15d1ac7de1629e3caf615fd227e203a577e4';
   static const String _baseApiUrl = 'https://store.aboidrees.dev/wp-json';
+  static const String token =
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3N0b3JlLmFib2lkcmVlcy5kZXYiLCJpYXQiOjE2NzMzNDM0OTQsIm5iZiI6MTY3MzM0MzQ5NCwiZXhwIjoxNjczOTQ4Mjk0LCJkYXRhIjp7InVzZXIiOnsiaWQiOjEsImRldmljZSI6IiIsInBhc3MiOiJlMzhhM2ZiYzViZjk4NDM2ZTI4NDE1YzdlZDJkYjA1MCJ9fX0.-RP7j6jI6Dbb_2o3g2xODlyQDAs-jE4627CUH0SDDU4";
 
   // Services URLS
   static const String jwtApiUrl = '$_baseApiUrl/jwt-auth/v1';

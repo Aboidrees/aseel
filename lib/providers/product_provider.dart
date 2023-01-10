@@ -1,5 +1,6 @@
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/services/wc_products_api.dart';
+import 'package:aseel/utils/enums.dart';
 import 'package:flutter/material.dart';
 
 class SortBy {
@@ -10,23 +11,29 @@ class SortBy {
   SortBy(this.value, this.text, this.sortOrder);
 }
 
-enum LoadMoreStatus { initial, loading, stable }
-
 class ProductProvider with ChangeNotifier {
-  LoadMoreStatus _loadMoreStatus = LoadMoreStatus.stable;
+  LoadingStatus _loadMoreStatus = LoadingStatus.stable;
+  LoadingStatus _loadingVariationsStatus = LoadingStatus.stable;
+
   late WCProductsService _wcProductsService;
   late List<ProductModel> _productVariations;
   late List<ProductModel> _productsList;
   late ProductModel _currentProduct;
   late SortBy _sortBy;
-  int pageSize = 9;
+  int pageSize = 12;
 
   // getters
+  LoadingStatus get loadVariationsStatus => _loadingVariationsStatus;
+
+  LoadingStatus get loadingMoreStatus => _loadMoreStatus;
+
+  List<ProductModel> get productVariations => _productVariations;
+
   List<ProductModel> get allProducts => _productsList;
 
-  double get totalRecords => _productsList.length.toDouble();
+  ProductModel get currentProduct => _currentProduct;
 
-  LoadMoreStatus get loadingStatus => _loadMoreStatus;
+  double get totalRecords => _productsList.length.toDouble();
 
   ProductProvider() {
     _sortBy = SortBy('modified', 'الأحدث', "asc");
@@ -38,33 +45,61 @@ class ProductProvider with ChangeNotifier {
     _productVariations = <ProductModel>[];
   }
 
-  setLoadingState(LoadMoreStatus loadMoreStatus) => _loadMoreStatus = loadMoreStatus;
+  setLoadingMoreStatus(LoadingStatus loadingStatus) {
+    _loadMoreStatus = loadingStatus;
+    Future.delayed(Duration.zero, () {
+      notifyListeners();
+    });
+  }
+
+  setLoadingVariationsStatus(LoadingStatus loadingStatus) {
+    _loadingVariationsStatus = loadingStatus;
+    Future.delayed(Duration.zero, () {
+      notifyListeners();
+    });
+  }
 
   setSortOrder(SortBy sortBy) {
     _sortBy = sortBy;
+    Future.delayed(Duration.zero, () {
+      notifyListeners();
+    });
+  }
+
+  setCurrentProduct(ProductModel product, {Function? onCallback}) {
+    _currentProduct = product;
+    if (onCallback != null) onCallback();
     notifyListeners();
   }
 
-  ProductModel get currentProduct => _currentProduct;
-
-  List<ProductModel> get productVariations => _productVariations;
-
-  setCurrentProduct(ProductModel product, {Function? onCallback}) async {
-    _currentProduct = product;
-    if (product.type == 'variable') {
-      // print(product);
-      await _wcProductsService.getVariableProduct(product.id)?.then((value) {
+  getProductVariations() {
+    if (_currentProduct.type == 'variable') {
+      setLoadingVariationsStatus(LoadingStatus.loading);
+      _wcProductsService.getVariableProduct(_currentProduct.id)?.then((value) {
         if (value.isNotEmpty) {
           _productVariations = [];
           _productVariations.addAll(value);
-          if (onCallback != null) onCallback();
-          notifyListeners();
+          setVariation(value[0]);
         }
       });
     }
   }
 
-  loadProductVariations() {}
+  setVariation(ProductModel product, {Function? onCallback}) {
+    setCurrentProduct(_currentProduct.copyWith(
+      price: product.price,
+      salePrice: product.salePrice,
+      regularPrice: product.regularPrice,
+      images: product.image != null ? [product.image!] : [],
+    ));
+
+    setLoadingVariationsStatus(LoadingStatus.stable);
+    if (onCallback != null) onCallback();
+
+    Future.delayed(Duration.zero, () {
+      notifyListeners();
+    });
+  }
 
   fetchProducts(
     int pageNumber, {
@@ -87,7 +122,7 @@ class ProductProvider with ChangeNotifier {
 
     if (products.isNotEmpty) _productsList.addAll(products);
 
-    setLoadingState(LoadMoreStatus.stable);
+    setLoadingMoreStatus(LoadingStatus.stable);
     if (onCallback != null) onCallback();
     notifyListeners();
   }
