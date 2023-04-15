@@ -35,29 +35,26 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
   void initState() {
     var productController = Provider.of<ProductProvider>(context, listen: false);
 
-    productController
-      ..resetStream()
-      ..setLoadingMoreStatus(LoadingStatus.initial)
-      ..fetchProducts(
-        _page,
-        onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
-      );
+    productController.resetStream();
+    productController.setLoadingMoreStatus(LoadingStatus.initial);
+    productController.fetchProducts(
+      _page,
+      onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
+    );
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        productController
-          ..setLoadingMoreStatus(LoadingStatus.loading)
-          ..fetchProducts(++_page);
+        productController.setLoadingMoreStatus(LoadingStatus.loading);
+        productController.fetchProducts(++_page);
       }
     });
 
     _searchQuery.addListener(() {
       if (_debounce != null && (_debounce?.isActive ?? false)) _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
-        productController
-          ..resetStream()
-          ..setLoadingMoreStatus(LoadingStatus.initial)
-          ..fetchProducts(_page, strSearch: _searchQuery.text);
+        productController.resetStream();
+        productController.setLoadingMoreStatus(LoadingStatus.initial);
+        productController.fetchProducts(_page, strSearch: _searchQuery.text);
       });
     });
     super.initState();
@@ -94,7 +91,7 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
           child: GridView.count(
             shrinkWrap: false,
             crossAxisCount: 3,
-            childAspectRatio: 0.76,
+            childAspectRatio: 0.70,
             controller: _scrollController,
             physics: const ClampingScrollPhysics(),
             scrollDirection: Axis.vertical,
@@ -133,19 +130,18 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
           ),
           const SizedBox(width: 15.0),
           Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFe6e6ec),
-              borderRadius: BorderRadius.circular(9.0),
-            ),
-            child: PopupMenuButton(
-              onSelected: (sortBy) => Provider.of<ProductProvider>(context, listen: false)
-                ..resetStream()
-                ..setSortOrder(sortBy)
-                ..fetchProducts(_page),
-              itemBuilder: (context) {
-                return _sortByOptions.map((option) {
-                  return PopupMenuItem(value: option, child: Text(option.text, textDirection: TextDirection.rtl));
-                }).toList();
+            decoration: BoxDecoration(color: const Color(0xFFe6e6ec), borderRadius: BorderRadius.circular(9.0)),
+            child: Consumer<ProductProvider>(
+              builder: (context, controller, child) {
+                return PopupMenuButton(
+                  onSelected: (sortBy) => controller
+                    ..resetStream()
+                    ..setSortOrder(sortBy)
+                    ..fetchProducts(1),
+                  itemBuilder: (context) {
+                    return _sortByOptions.map((option) => PopupMenuItem(value: option, child: Text(option.text))).toList();
+                  },
+                );
               },
             ),
           ),

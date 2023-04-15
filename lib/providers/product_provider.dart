@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:aseel/models/product_model.dart';
 import 'package:aseel/services/wc_products_api.dart';
 import 'package:aseel/utils/enums.dart';
@@ -9,6 +11,9 @@ class SortBy {
   String sortOrder;
 
   SortBy(this.value, this.text, this.sortOrder);
+
+  @override
+  String toString() => 'SortBy(value: $value, text: $text, sortOrder: $sortOrder)';
 }
 
 class ProductProvider with ChangeNotifier {
@@ -61,9 +66,8 @@ class ProductProvider with ChangeNotifier {
 
   setSortOrder(SortBy sortBy) {
     _sortBy = sortBy;
-    Future.delayed(Duration.zero, () {
-      notifyListeners();
-    });
+    print(_sortBy);
+    // Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   setCurrentProduct(ProductModel product, {Function? onCallback}) {

@@ -48,9 +48,7 @@ class CategoryListItem extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => ProductsMenuPage(categoryId: category.id),
-          ),
+          MaterialPageRoute(builder: (context) => ProductsMenuPage(categoryId: category.id)),
         );
       },
       child: Column(

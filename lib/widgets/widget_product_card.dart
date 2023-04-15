@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(product.name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11)),
+              child: Text(product.name, overflow: TextOverflow.ellipsis, maxLines: 2),
             ),
 
             //

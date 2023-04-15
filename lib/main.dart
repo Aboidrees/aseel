@@ -37,14 +37,31 @@ class App extends StatelessWidget {
       title: 'الأصيل',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        useMaterial3: true,
         fontFamily: GoogleFonts.cairo().fontFamily,
         primaryColor: Colors.white,
         primarySwatch: Colors.amber,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(elevation: 0, foregroundColor: Colors.white),
         textTheme: const TextTheme(
-          headline1: TextStyle(fontSize: 22.0, color: Colors.amber, fontWeight: FontWeight.w400),
-          headline2: TextStyle(fontSize: 24.0, color: Colors.amber, fontWeight: FontWeight.w700),
-          bodyText1: TextStyle(fontSize: 14.0, color: Colors.amber, fontWeight: FontWeight.w400),
+          // Short Text, high-emphasis
+          headlineLarge: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.bold),
+          headlineSmall: TextStyle(fontSize: 10.0, color: Colors.black, fontWeight: FontWeight.bold),
+
+          // Short Text, medium-emphasis
+          titleLarge: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+          titleMedium: TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.w400),
+          titleSmall: TextStyle(fontSize: 10.0, color: Colors.black, fontWeight: FontWeight.w400),
+
+          // Short important text, numarical
+          displayLarge: TextStyle(fontSize: 14.0, color: Colors.amber, fontWeight: FontWeight.w400),
+          displayMedium: TextStyle(fontSize: 12.0, color: Colors.amber, fontWeight: FontWeight.w400),
+          displaySmall: TextStyle(fontSize: 10.0, color: Colors.amber, fontWeight: FontWeight.w400),
+
+          // long texrt
+          bodyLarge: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+          bodyMedium: TextStyle(fontSize: 12.0, color: Colors.black, fontWeight: FontWeight.w400),
+          bodySmall: TextStyle(fontSize: 10.0, color: Colors.black, fontWeight: FontWeight.w400),
         ),
       ),
       home: const HomePage(),

@@ -1,4 +1,3 @@
-import 'package:aseel/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class WidgetSectionHead extends StatelessWidget {
@@ -9,18 +8,19 @@ class WidgetSectionHead extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context).textTheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Text(headLabel, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          child: Text(headLabel, style: theme.headlineLarge),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: TextButton(
             onPressed: onPressed,
-            child: const Text('عرض الكل', style: TextStyle(color: AppColors.accentColor)),
+            child: Text('عرض الكل', style: theme.displayMedium),
           ),
         ),
       ],

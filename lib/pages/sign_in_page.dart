@@ -62,7 +62,7 @@ class _SignInPageState extends State<SignInPage> {
                     child: Column(
                       children: [
                         const SizedBox(height: 25),
-                        Text("Login", style: Theme.of(context).textTheme.headline2),
+                        Text("Login", style: Theme.of(context).textTheme.bodyMedium),
                         const SizedBox(height: 20),
                         TextFormField(
                           style: const TextStyle(color: AppColors.accentColor),
@@ -93,8 +93,7 @@ class _SignInPageState extends State<SignInPage> {
                               focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor)),
                               prefixIcon: const Icon(Icons.lock_outline, color: AppColors.accentColor),
                               suffixIcon: IconButton(
-                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility,
-                                    color: AppColors.accentColor.withOpacity(0.2)),
+                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility, color: AppColors.accentColor.withOpacity(0.2)),
                                 onPressed: () => setState(() => hidePassword = !hidePassword),
                               )),
                         ),
