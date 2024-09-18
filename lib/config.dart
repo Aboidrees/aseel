@@ -1,9 +1,8 @@
 class Config {
-  static const String key = 'ck_d8d861d047f9b1e18b59a9fd885f2df06a023a91';
-  static const String secret = 'cs_1ccf15d1ac7de1629e3caf615fd227e203a577e4';
-  static const String _baseApiUrl = 'https://store.aboidrees.dev/wp-json';
-  static const String token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3N0b3JlLmFib2lkcmVlcy5kZXYiLCJpYXQiOjE2NzMzNDM0OTQsIm5iZiI6MTY3MzM0MzQ5NCwiZXhwIjoxNjczOTQ4Mjk0LCJkYXRhIjp7InVzZXIiOnsiaWQiOjEsImRldmljZSI6IiIsInBhc3MiOiJlMzhhM2ZiYzViZjk4NDM2ZTI4NDE1YzdlZDJkYjA1MCJ9fX0.-RP7j6jI6Dbb_2o3g2xODlyQDAs-jE4627CUH0SDDU4";
+  static const String key = 'ck_e94e58827d60aad3f610856bc5dfb46b7c90e1e6';
+  static const String secret = 'cs_16940a53cbb6e99d0fcb4d554a402693fec653aa';
+  static const String _baseApiUrl = 'http://192.168.18.39:8080/wp-json';
+  static const String token = "";
 
   // Services URLS
   static const String jwtApiUrl = '$_baseApiUrl/jwt-auth/v1';
@@ -12,9 +11,9 @@ class Config {
 
   // static const String ccStoreApiUrl = '$_baseApiUrl/cocart/v2/store';
 
-  static const String newArrivalTag = '75';
-  static const String topSellTag = '76';
-  static const String offersTag = '77';
+  static const String newArrivalTag = '31';
+  static const String topSellTag = "32";
+  static const String offersTag = '30';
 }
 
 class EndPoints {

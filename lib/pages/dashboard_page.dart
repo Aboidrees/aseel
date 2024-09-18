@@ -17,9 +17,18 @@ class DashboardPage extends StatelessWidget {
           children: [
             imageCarousal(context),
             const WidgetHomeCategories(),
-            WidgetHomeProducts(labelName: "العروض", products: Provider.of<HomeProvider>(context).offers),
-            WidgetHomeProducts(labelName: "أحدث المنتجات", products: Provider.of<HomeProvider>(context).newArrival),
-            WidgetHomeProducts(labelName: "الأكثر مبيعاً", products: Provider.of<HomeProvider>(context).topSelling),
+            WidgetHomeProducts(
+              labelName: "العروض",
+              products: Provider.of<HomeProvider>(context).offers,
+            ),
+            WidgetHomeProducts(
+              labelName: "أحدث المنتجات",
+              products: Provider.of<HomeProvider>(context).newArrival,
+            ),
+            WidgetHomeProducts(
+              labelName: "الأكثر مبيعاً",
+              products: Provider.of<HomeProvider>(context).topSelling,
+            ),
           ],
         ),
       ),
@@ -29,29 +38,31 @@ class DashboardPage extends StatelessWidget {
   Widget imageCarousal(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 320,
       child: Carousel(
-        overlayShadow: false,
+        overlayShadow: true,
         hasBorderRadius: true,
+        dotBgColor: Colors.transparent,
         boxFit: BoxFit.none,
         autoplay: true,
         dotSize: 4.0,
+        autoplayDuration: const Duration(seconds: 3),
         images: [
           FittedBox(
             fit: BoxFit.fill,
-            child: Image.network("https://upload.wikimedia.org/wikipedia/commons/d/de/Nokota_Horses_cropped.jpg"),
+            child: Image.network("http://192.168.18.39:8080/wp-content/uploads/2024/09/beanie-2.jpg"),
           ),
           FittedBox(
             fit: BoxFit.fill,
-            child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Points_of_a_horse.jpg/330px-Points_of_a_horse.jpg"),
+            child: Image.network("http://192.168.18.39:8080/wp-content/uploads/2024/09/beanie-2.jpg"),
           ),
           FittedBox(
             fit: BoxFit.fill,
-            child: Image.network("https://cdn.equishop.com/img/cms/horse-anatomy/muscular-system.jpg"),
+            child: Image.network("http://192.168.18.39:8080/wp-content/uploads/2024/09/beanie-2.jpg"),
           ),
           FittedBox(
             fit: BoxFit.fill,
-            child: Image.network("https://www.horse-genetics.com/images/KholorByDesign-400.jpg"),
+            child: Image.network("http://192.168.18.39:8080/wp-content/uploads/2024/09/beanie-2.jpg"),
           ),
         ],
       ),

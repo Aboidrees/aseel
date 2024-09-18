@@ -1,12 +1,10 @@
 import 'package:aseel/constants/colors.dart';
-import 'package:aseel/models/cart_model.dart';
-import 'package:aseel/models/image_model.dart';
-import 'package:aseel/models/product_model.dart';
 import 'package:aseel/providers/cart_provider.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/utils/custom_stepper.dart';
 import 'package:aseel/utils/expand_text.dart';
+import 'package:aseel/utils/extensions.dart';
 import 'package:aseel/utils/util.dart';
 import 'package:aseel/widgets/image_display.dart';
 import 'package:aseel/widgets/widget_product_card.dart';
@@ -14,6 +12,7 @@ import 'package:aseel/widgets/widget_related_products.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
 
 class WidgetProductDetails extends StatefulWidget {
   const WidgetProductDetails({super.key});
@@ -65,7 +64,7 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(product.name, textAlign: TextAlign.center, style: style.copyWith(fontSize: 14)),
+                        Text(product.name ?? "", textAlign: TextAlign.center, style: style.copyWith(fontSize: 14)),
                         ProductPrice(product: product),
                       ],
                     ),
@@ -75,15 +74,15 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Visibility(
-                          visible: product.type != "variable",
+                          visible: product.type != ProductTypeEnum.variable,
                           child: Column(
                             children: [
-                              for (var attribute in product.attributes ?? []) Text("${attribute.name}:  ${attribute.options?.join(" - ")} "),
+                              for (var attribute in product.attributes) Text("${attribute.name}:  ${attribute.options.join(" - ")} "),
                             ],
                           ),
                         ),
                         Visibility(
-                          visible: product.type == "variable" && Utils.isStable(provider.loadVariationsStatus),
+                          visible: product.type == ProductTypeEnum.variable && Utils.isStable(provider.loadVariationsStatus),
                           child: SelectableTile(
                             label: "اللون",
                             items: provider.productVariations,
@@ -91,7 +90,7 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                           ),
                         ),
                         Visibility(
-                          visible: product.type == "variable" && Utils.isLoading(provider.loadVariationsStatus),
+                          visible: product.type == ProductTypeEnum.variable && Utils.isLoading(provider.loadVariationsStatus),
                           child: Container(width: 20, height: 20, margin: const EdgeInsets.only(right: 30, top: 10), child: const CircularProgressIndicator()),
                         ),
                       ],
@@ -121,7 +120,30 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                             context
                                 .read<CartProvider>() //
                                 .addToCart(
-                                  AddToCartModel(id: product.id.toString(), quantity: _qty.toString(), variation: {}),
+                               ShopOrder1LineItemsInner(
+                                  quantity: _qty,
+                                  name: product.name,
+                                  sku: product.sku,
+
+                                 image: ShopOrder1LineItemsImageInner(
+                                    src: product.images.first.src,
+                                  ),
+                                  price: num.parse(product.regularPrice??'0'),
+                                  productId: product.id,
+                                  variationId: product.id,
+
+                               ),
+                              // WooCartItem(
+                              //   id: product.id,
+                              //   quantity: _qty,
+                              //   name: product.name,
+                              //   sku: product.sku,
+                              //   permalink: product.permalink,
+                              //   images: product.images,
+                              //   price: product.regularPrice,
+                              //   linePrice: product.regularPrice,
+                              //   variations: product.variations,
+                              // ),
                                   onCallback: () => context.read<LoaderProvider>().setStatus(false),
                                 );
                           },
@@ -135,10 +157,10 @@ class _WidgetProductDetailsState extends State<WidgetProductDetails> {
                     ExpandText(labelHeader: "تفاصيل المنتج", desc: product.description ?? "", shortDesc: product.shortDescription ?? ""),
 
                     // Related Items
-                    Visibility(visible: product.relatedIds?.isNotEmpty ?? false, child: const Divider()),
+                    Visibility(visible: product.relatedIds.isNotEmpty , child: const Divider()),
                     Visibility(
-                      visible: product.relatedIds?.isNotEmpty ?? false,
-                      child: WidgetRelatedProducts(labelName: "منتجات أخرى", productsIds: product.relatedIds ?? []),
+                      visible: product.relatedIds.isNotEmpty ,
+                      child: WidgetRelatedProducts(labelName: "منتجات أخرى", productsIds: product.relatedIds ),
                     ),
                   ],
                 ),
@@ -159,30 +181,30 @@ class ProductDetailsImagesSlider extends StatefulWidget {
 }
 
 class _ProductDetailsImagesSliderState extends State<ProductDetailsImagesSlider> {
-  late CarouselController _carousel;
+  late CarouselSliderController _carousel;
 
   @override
   void initState() {
-    _carousel = CarouselController();
+    _carousel = CarouselSliderController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductProvider>(builder: (context, controller, child) {
-      List<ImageModel> images = controller.currentProduct.images ?? <ImageModel>[];
+      List<Product1ImagesInner> images = controller.currentProduct.images;
       switch (images.length) {
         case 0:
           return const ImageDisplay(isPlaceholder: true, height: 300);
         case 1:
-          return ImageDisplay(imageURL: images[0].url, height: 300);
+          return ImageDisplay(imageURL: images.first.src, height: 300);
 
         default:
           return Stack(
             children: [
               CarouselSlider.builder(
                 itemCount: images.length,
-                itemBuilder: (context, index, realIndex) => ImageDisplay(imageURL: images[index].url, height: 300),
+                itemBuilder: (context, index, realIndex) => ImageDisplay(imageURL: images[index].src, height: 300),
                 options: CarouselOptions(autoPlay: false, enlargeCenterPage: true, viewportFraction: 1),
                 carouselController: _carousel,
               ),
@@ -222,8 +244,8 @@ class SelectableTile extends StatefulWidget {
   });
 
   final String label;
-  final List<ProductModel> items;
-  final Function(ProductModel value) onPressed;
+  final List<ProductVariation> items;
+  final Function(ProductVariation value) onPressed;
   final double? width;
   final double? itemFontSize;
   final double? labelFontSize;
@@ -271,7 +293,7 @@ class _SelectableTileState extends State<SelectableTile> {
                   color: currentIndex == index ? AppColors.accentColor.withOpacity(0.7) : Colors.grey.shade100,
                 ),
                 child: Text(
-                  "${widget.items[index].attributes?.first.option}",
+                  "${widget.items[index].attributes.first.option}",
                   style: TextStyle(color: currentIndex == index ? Colors.white : Colors.black, fontSize: widget.itemFontSize),
                 ),
               ),

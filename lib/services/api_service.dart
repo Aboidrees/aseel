@@ -30,7 +30,7 @@ class APIService {
       var response = await Dio().post(EndPoints.customers, data: customer.toJson(), options: requestOptions(authHeader: basicAuth));
 
       if (response.statusCode == 201) ret = true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(json.decode(e.response.toString())['message']);
       if (e.response?.statusCode == 404) {
         ret = false;
@@ -55,7 +55,7 @@ class APIService {
       if (response.statusCode == 200) {
         return LoginResponseModel.fromMap(response.data);
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return null;
@@ -71,7 +71,7 @@ class APIService {
         log(response.toString());
         return null;
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
       return null;
     }
@@ -85,7 +85,7 @@ class APIService {
         options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return CartDetailsModel.fromMap(response.data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return null;
@@ -99,7 +99,7 @@ class APIService {
         options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return CartDetailsModel.fromMap(response.data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return null;
@@ -112,7 +112,7 @@ class APIService {
         options: requestOptions(authHeader: bearerAuth),
       );
       if (response.statusCode == 200) return true;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return null;

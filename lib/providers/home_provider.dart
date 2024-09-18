@@ -1,46 +1,33 @@
 import 'package:aseel/config.dart';
-import 'package:aseel/models/category.dart';
-import 'package:aseel/models/product_model.dart';
-import 'package:aseel/services/wc_categories_api.dart';
-import 'package:aseel/services/wc_products_api.dart';
+import 'package:aseel/main.dart';
 import 'package:flutter/material.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
 
 class HomeProvider with ChangeNotifier {
-  late WCCategoriesService _wcCategoriesService;
-  late WCProductsService _wcProductsService;
+  late List<ProductCat> _categories = [];
 
-  late List<CategoryModel> _categories = [];
-  late List<ProductModel> _offers;
-  late List<ProductModel> _topRated;
-  late List<ProductModel> _topSelling;
-  late List<ProductModel> _newArrival;
+  late List<Product> _offers;
+  late List<Product> _topRated;
+  late List<Product> _topSelling;
+  late List<Product> _newArrival;
 
-  List<CategoryModel> get categories => _categories;
-  List<ProductModel> get offers => _offers;
-  List<ProductModel> get topRated => _topRated;
-  List<ProductModel> get topSelling => _topSelling;
-  List<ProductModel> get newArrival => _newArrival;
+  List<ProductCat> get categories => _categories;
+  List<Product> get offers => _offers;
+  List<Product> get topRated => _topRated;
+  List<Product> get topSelling => _topSelling;
+  List<Product> get newArrival => _newArrival;
 
   HomeProvider() {
-    // _wcProductsService.getProducts(tagName: Config.offersTag).then(_offers.addAll);
-    // _wcProductsService.getProducts(tagName: Config.topSellTag).then(_topRated.addAll);
-    // // _wcProductsService.getProducts(tagName: "").then(_topSaled.addAll);
-    // _wcProductsService.getProducts(tagName: Config.newArrivalTag).then(_latest.addAll);
-
     resetStream();
     _initialize();
   }
 
   resetStream() {
-    _wcCategoriesService = WCCategoriesService();
-    _wcProductsService = WCProductsService();
-
-    _categories = <CategoryModel>[];
-
-    _offers = <ProductModel>[];
-    _topRated = <ProductModel>[];
-    _topSelling = <ProductModel>[];
-    _newArrival = <ProductModel>[];
+    _categories = <ProductCat>[];
+    _offers = <Product>[];
+    _topRated = <Product>[];
+    _topSelling = <Product>[];
+    _newArrival = <Product>[];
   }
 
   _initialize() {
@@ -51,38 +38,30 @@ class HomeProvider with ChangeNotifier {
   }
 
   Future getCategories() async {
-    _wcCategoriesService.getCategories().then((value) {
-      if (value.isNotEmpty) {
-        _categories.addAll(value);
-        notifyListeners();
-      }
+    woocommerce.productsCategoriesGet().then((value) {
+      _categories.addAll(value ?? []);
+      notifyListeners();
     });
   }
 
   Future getOffers() async {
-    _wcProductsService.getProducts(tagName: Config.offersTag).then((value) {
-      if (value.isNotEmpty) {
-        _offers.addAll(value);
-        notifyListeners();
-      }
+    woocommerce.productsGet(tag: Config.offersTag).then((value) {
+      _offers.addAll(value ?? []);
+      notifyListeners();
     });
   }
 
   Future getNewArrival() async {
-    _wcProductsService.getProducts(tagName: Config.newArrivalTag).then((value) {
-      if (value.isNotEmpty) {
-        _newArrival.addAll(value);
-        notifyListeners();
-      }
+    woocommerce.productsGet(tag: Config.newArrivalTag).then((value) {
+      _newArrival.addAll(value ?? []);
+      notifyListeners();
     });
   }
 
   Future getTopSelling() async {
-    _wcProductsService.getProducts(tagName: Config.topSellTag).then((value) {
-      if (value.isNotEmpty) {
-        _topSelling.addAll(value);
-        notifyListeners();
-      }
+    woocommerce.productsGet(tag: Config.topSellTag).then((value) {
+      _topSelling.addAll(value ?? []);
+      notifyListeners();
     });
   }
 }

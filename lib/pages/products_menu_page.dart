@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aseel/models/product_model.dart';
 import 'package:aseel/pages/base.dart';
 import 'package:aseel/providers/loader_provider.dart';
 import 'package:aseel/providers/product_provider.dart';
@@ -9,6 +8,7 @@ import 'package:aseel/utils/util.dart';
 import 'package:aseel/widgets/widget_product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
 
 class ProductsMenuPage extends BasePage {
   final int? categoryId;
@@ -25,10 +25,9 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
   final _searchQuery = TextEditingController();
   Timer? _debounce;
   final _sortByOptions = [
-    SortBy("popularity", "الأكثر شعبية", "asc"),
-    SortBy("modified", "الاحدث", "asc"),
-    SortBy("price", "السعر: الأقيم إلى الارخص", "asc"),
-    SortBy("price", "السعر: الارخص إلى الأقيم", "desc"),
+    SortBy("popularity", "Popularity", 'asc'),
+    SortBy("modified", "Modified", 'asc'),
+    SortBy("price", "Low Price", 'asc'),
   ];
 
   @override
@@ -84,7 +83,7 @@ class _ProductsMenuPageState extends BasePageState<ProductsMenuPage> {
     );
   }
 
-  Widget _buildProductsList(List<ProductModel> products, bool isLoadingMore) {
+  Widget _buildProductsList(List<Product> products, bool isLoadingMore) {
     return Column(
       children: [
         Flexible(

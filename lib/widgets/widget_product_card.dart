@@ -6,14 +6,14 @@
 // import 'package:aseel/widgets/widget_home_products.dart';
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
-
 import 'package:aseel/constants/colors.dart';
-import 'package:aseel/models/product_model.dart';
 import 'package:aseel/providers/product_provider.dart';
 import 'package:aseel/utils/enums.dart';
 import 'package:aseel/widgets/image_display.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
+import 'package:woocommerce_flutter_api/woocommerce_flutter_api.dart';
 
 import '../pages/product_details_page.dart';
 
@@ -30,7 +30,7 @@ class ProductCard extends StatelessWidget {
     this.boxShadow,
   });
 
-  final ProductModel product;
+  final Product product;
   final double? width;
   final double? height;
   final Color? backgroundColor;
@@ -72,11 +72,15 @@ class ProductCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(cornerRadius!),
                 boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(1, 2), blurRadius: 5)],
               ),
-              child: ImageDisplay(imageURL: product.images?[0].url, borderRadius: BorderRadius.circular(cornerRadius!)),
+              child: ImageDisplay(
+                imageURL: product.images.isNotEmpty ? product.images.first.src : "",
+                borderRadius: BorderRadius.circular(cornerRadius!),
+              ),
             ),
+            const SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(product.name, overflow: TextOverflow.ellipsis, maxLines: 2),
+              child: Text(product.name ?? '', overflow: TextOverflow.ellipsis, maxLines: 2),
             ),
 
             //
@@ -94,7 +98,7 @@ class ProductCard extends StatelessWidget {
 class ProductPrice extends StatelessWidget {
   const ProductPrice({super.key, required this.product});
 
-  final ProductModel product;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +109,11 @@ class ProductPrice extends StatelessWidget {
 
     return Visibility(
       visible: sale > 0 || regular > 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // regular
-          Text("$regular ريال", style: style.copyWith(decoration: productHasSale ? TextDecoration.lineThrough : null)),
+          Text("${regular.toStringAsFixed(2)} ريال", style: style.copyWith(decoration: productHasSale ? TextDecoration.lineThrough : null)),
           Visibility(visible: productHasSale, child: const SizedBox(width: 4)),
           // sale
           Visibility(

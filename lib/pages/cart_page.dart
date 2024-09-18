@@ -6,6 +6,8 @@ import 'package:aseel/utils/progress_hud.dart';
 import 'package:aseel/widgets/widget_cart_product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
+import 'package:woocommerce_flutter_api/woocommerce_flutter_api.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -17,10 +19,14 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   void initState() {
-    Future.delayed(Duration.zero, () => Provider.of<LoaderProvider>(context, listen: false).setStatus(true));
-
+    // Future.delayed(Duration.zero, () {
+    //   if(context.mounted){
+    //     Provider.of<LoaderProvider>(context, listen: false).setStatus(true);
+    //   }
+    // });
+    //
     Provider.of<CartProvider>(context, listen: false).updateCartDetails(
-      onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
+      // onCallback: () => Provider.of<LoaderProvider>(context, listen: false).setStatus(false),
     );
 
     super.initState();
@@ -32,8 +38,8 @@ class _CartPageState extends State<CartPage> {
       body: ProgressHUD(
         inAsyncCall: context.watch<LoaderProvider>().isApiCallProcess,
         opacity: 0.3,
-        child: Column(
-          children: const [
+        child: const Column(
+          children: [
             CartItemsList(),
             CheckoutButton(),
           ],
@@ -49,7 +55,7 @@ class CartItemsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Selector<CartProvider, List<CartItemModel>>(
+      child: Selector<CartProvider, List<ShopOrder1LineItemsInner>>(
         selector: (context, cart) => cart.items,
         builder: (context, items, child) {
           return ListView.builder(
@@ -84,8 +90,8 @@ class CheckoutButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(' دفع ', style: style),
-            Selector<CartProvider, double>(
-              selector: (context, cart) => cart.totalAmount,
+            Selector<CartProvider, String>(
+              selector: (context, cart) => cart.totalAmount.toStringAsFixed(2),
               builder: (context, total, child) => Text(' ($total) ', style: style),
             ),
             Text(' ريال', style: style),

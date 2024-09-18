@@ -27,7 +27,7 @@ class _ExpandTextState extends State<ExpandText> {
           ),
           Html(
             data: descTextShowFlag ? widget.desc : widget.shortDesc,
-            style: {'div': Style(padding: const EdgeInsets.only(top: 5, bottom: 5), fontSize: FontSize.medium)},
+            style: {'div': Style(padding: HtmlPaddings.only(top: 5, bottom: 5), fontSize: FontSize.medium)},
           ),
           Align(
             child: GestureDetector(

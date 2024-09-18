@@ -19,11 +19,16 @@ class WidgetAppBar extends StatelessWidget {
       title: const Text("الأصيل", style: TextStyle(color: Colors.white)),
       actionsIconTheme: const IconThemeData(size: 32),
       actions: [
-        Center(child: IconButton(onPressed: () {}, splashRadius: 24, padding: EdgeInsets.zero, icon: const Icon(Icons.notifications_none))),
-        const SizedBox(width: 10),
         Stack(
           children: [
-            Center(child: IconButton(onPressed: () {}, splashRadius: 24, padding: EdgeInsets.zero, icon: const Icon(Icons.shopping_cart))),
+            Center(
+              child: IconButton(
+                onPressed: () {},
+                splashRadius: 24,
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.shopping_cart, size: 24),
+              ),
+            ),
             Selector<CartProvider, int>(
               selector: (_, cart) => cart.items.length,
               builder: (_, itemCount, __) {
@@ -48,6 +53,15 @@ class WidgetAppBar extends StatelessWidget {
             )
           ],
         ),
+        Center(
+          child: IconButton(
+            onPressed: () {},
+            splashRadius: 24,
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.notifications_none, size: 24),
+          ),
+        ),
+        // const SizedBox(width: 10),
       ],
     );
   }

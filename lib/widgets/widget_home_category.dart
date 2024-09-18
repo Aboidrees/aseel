@@ -1,10 +1,11 @@
-import 'package:aseel/models/category.dart';
 import 'package:aseel/pages/products_menu_page.dart';
 import 'package:aseel/providers/home_provider.dart';
 import 'package:aseel/widgets/image_display.dart';
 import 'package:aseel/widgets/widget_section_head.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woocommerce_client/woocommerce_client.dart';
+import 'package:woocommerce_flutter_api/woocommerce_flutter_api.dart';
 
 class WidgetHomeCategories extends StatelessWidget {
   const WidgetHomeCategories({super.key});
@@ -39,7 +40,7 @@ class WidgetHomeCategories extends StatelessWidget {
 }
 
 class CategoryListItem extends StatelessWidget {
-  final CategoryModel category;
+  final ProductCat category;
   const CategoryListItem({super.key, required this.category});
 
   @override
@@ -65,7 +66,7 @@ class CategoryListItem extends StatelessWidget {
             ),
 
             //! Add WIDTH & HIEGHT less than 80 to ImageDisplay to create border for the image
-            child: ImageDisplay(imageURL: category.image?.url, borderRadius: BorderRadius.circular(40)),
+            child: ImageDisplay(imageURL: category.image?.src ?? "", borderRadius: BorderRadius.circular(40)),
           ),
           Text(category.name.toString()),
         ],

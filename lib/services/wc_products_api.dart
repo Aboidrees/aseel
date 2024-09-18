@@ -39,7 +39,7 @@ class WCProductsService extends APIService {
           products.add(ProductModel.fromMap(product));
         }
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return products;
@@ -58,7 +58,7 @@ class WCProductsService extends APIService {
           varProducts.add(ProductModel.fromMap(varProduct));
         }
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log(e.response.toString());
     }
     return varProducts;
