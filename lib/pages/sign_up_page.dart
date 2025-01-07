@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Column(
                       children: [
                         const SizedBox(height: 25),
-                        Text("Register", style: Theme.of(context).textTheme.bodyMedium),
+                        Text("Register", style: Theme.of(context).textTheme.displayMedium),
                         const SizedBox(height: 20),
                         TextFormField(
                           style: const TextStyle(color: AppColors.accentColor),
@@ -117,7 +117,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor.withOpacity(0.2))),
                               focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.accentColor)),
                               suffixIcon: IconButton(
-                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility, color: AppColors.accentColor.withOpacity(0.2)),
+                                icon: Icon(hidePassword ? Icons.visibility_off : Icons.visibility,
+                                    color: AppColors.accentColor.withOpacity(0.2)),
                                 onPressed: () => setState(() => hidePassword = !hidePassword),
                               )),
                         ),

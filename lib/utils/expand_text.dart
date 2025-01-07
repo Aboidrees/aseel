@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class ExpandText extends StatefulWidget {
   final String labelHeader;
@@ -25,10 +24,10 @@ class _ExpandTextState extends State<ExpandText> {
             widget.labelHeader,
             style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
           ),
-          Html(
-            data: descTextShowFlag ? widget.desc : widget.shortDesc,
-            style: {'div': Style(padding: const EdgeInsets.only(top: 5, bottom: 5), fontSize: FontSize.medium)},
-          ),
+          // Html(
+          //   data: descTextShowFlag ? widget.desc : widget.shortDesc,
+          //   style: {'div': Style(padding: const EdgeInsets.only(top: 5, bottom: 5), fontSize: FontSize.medium)},
+          // ),
           Align(
             child: GestureDetector(
               child: Text(descTextShowFlag ? "اخفاء التفاصيل" : "قراءة المزيد", style: const TextStyle(color: Colors.blue)),

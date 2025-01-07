@@ -32,8 +32,8 @@ class _CartPageState extends State<CartPage> {
       body: ProgressHUD(
         inAsyncCall: context.watch<LoaderProvider>().isApiCallProcess,
         opacity: 0.3,
-        child: Column(
-          children: const [
+        child: const Column(
+          children: [
             CartItemsList(),
             CheckoutButton(),
           ],
